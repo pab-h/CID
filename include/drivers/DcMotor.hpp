@@ -24,8 +24,8 @@ namespace drivers {
             void clockwise();
             void counterclockwise();
             
-            void speed(u_int8_t pwm);
-            void stop();
+            void power(u_int8_t pwm);
+            void disable();
             
     };
 

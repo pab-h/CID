@@ -29,13 +29,13 @@ void DcMotor::counterclockwise() {
 
 }
 
-void DcMotor::speed(u_int8_t pwm) {
+void DcMotor::power(u_int8_t pwm) {
 
     analogWrite(this->en, pwm);
 
 }
 
-void DcMotor::stop() {
+void DcMotor::disable() {
 
     digitalWrite(this->inl, LOW);
     digitalWrite(this->inr, LOW);

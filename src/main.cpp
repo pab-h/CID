@@ -21,8 +21,8 @@ void setup() {
 
     Serial.begin(9600);
 
-    motorA.speed(0xFF);
-    motorB.speed(0xFF);
+    motorA.power(0xFF);
+    motorB.power(0xFF);
 
 }
 
