@@ -21,8 +21,11 @@ void setup() {
 
     Serial.begin(9600);
 
-    motorA.power(0xFF);
-    motorB.power(0xFF);
+    motorA.setPower(0xFF);
+    motorB.setPower(0xFF);
+
+    motorA.enable();
+    motorB.enable();
 
 }
 
