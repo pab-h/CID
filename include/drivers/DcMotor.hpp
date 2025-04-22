@@ -17,6 +17,8 @@ namespace drivers {
             u_int8_t inl;
             u_int8_t inr;
 
+            uint8_t power;
+
         public:
 
             DcMotor(u_int8_t en, u_int8_t inl, u_int8_t inr);
@@ -24,8 +26,10 @@ namespace drivers {
             void clockwise();
             void counterclockwise();
             
-            void speed(u_int8_t pwm);
-            void stop();
+            void setPower(u_int8_t pwm);
+
+            void disable();
+            void enable();
             
     };
 
