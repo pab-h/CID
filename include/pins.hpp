@@ -12,3 +12,6 @@
 
 /* Pinos do sensor de umidade*/
 #define SOIL_MOISTURE_PIN 0x77 //pin 34
+
+/* Pinos do sensor de temperatura*/
+#define TEMP_PIN 0X77 // Pino digital

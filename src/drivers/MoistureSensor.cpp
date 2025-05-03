@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "drivers/MoistureSensor.hpp"
 
-using namespace sensors;
+using namespace drivers;
 
 //Adicionar validações de calibração
 MoistureSensor::MoistureSensor(uint8_t pin) {
