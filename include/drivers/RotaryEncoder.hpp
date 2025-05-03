@@ -13,8 +13,8 @@ namespace drivers {
             * sigb: Signal of direction change
             */
 
-            u_int8_t siga;
-            u_int8_t sigb;
+            uint8_t siga;
+            uint8_t sigb;
 
             int position;
 
@@ -23,7 +23,7 @@ namespace drivers {
 
         public:
 
-            RotaryEncoder(u_int8_t siga, u_int8_t sigb);
+            RotaryEncoder(uint8_t siga, uint8_t sigb);
 
             /**
              * If possible, link read to a change 
