@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 
-namespace sensors{
+namespace drivers{
 
     class MoistureSensor{
 
