@@ -11,4 +11,4 @@
 #define IN4_PIN 0x77
 
 /* Pinos do sensor de umidade*/
-#define SOIL_MOISTURE_PIN 34
+#define SOIL_MOISTURE_PIN 0x77 //pin 34

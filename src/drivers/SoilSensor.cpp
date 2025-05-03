@@ -1,10 +1,10 @@
 #include <Arduino.h>
-#include "drivers/SoilSensor.hpp"
+#include "drivers/MoistureSensor.hpp"
 
 using namespace sensors;
 
 //Adicionar validações de calibração
-SoilSensor::SoilSensor(uint8_t pin) {
+MoistureSensor::MoistureSensor(uint8_t pin) {
 
     this->pin = pin;
 
@@ -17,13 +17,13 @@ SoilSensor::SoilSensor(uint8_t pin) {
     pinMode(this->pin, INPUT);
 }
 
-int SoilSensor::read(){
+int MoistureSensor::read(){
 
     return max(analogRead(this->pin) - this->offset, 0);
 
 }
 
-int SoilSensor::readPercentage(){
+int MoistureSensor::readPercentage(){
 
     int percentage = map(this->read(), this->minValue, this->maxValue, 0, 100);
     percentage = constrain(percentage, 0, 100);
@@ -32,7 +32,7 @@ int SoilSensor::readPercentage(){
 
 }
 
-void SoilSensor::calibrate(int offset, int minValue, int maxValue){
+void MoistureSensor::calibrate(int offset, int minValue, int maxValue){
 
     this->offset = offset;
 
