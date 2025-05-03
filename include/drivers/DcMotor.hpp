@@ -5,7 +5,7 @@
 namespace drivers {
 
     /**
-     * É assumido que esteja usando uma ponte-H
+     * It is assumed that you are using an H-bridge
      */
     
     class DcMotor {
