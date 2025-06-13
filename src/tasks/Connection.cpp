@@ -5,7 +5,8 @@ void wifiConnectAndSend() {
   WifiDriver wifi;
 
   Serial.println("Iniciando conexão Wi-Fi...");
-  if (wifi.connect("SUA_REDE", "SUA_SENHA")) {
+
+  if (wifi.connect("Oie", "12345678")) {
     Serial.println("Wi-Fi conectado!");
 
     String payload = "{\"umidade\": 42}";

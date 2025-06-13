@@ -18,6 +18,7 @@ bool WifiDriver::connect(const String& ssid, const String& password) {
     while (WiFi.status() != WL_CONNECTED && tentativas < 10) {
         Serial.print(".");
         delay(1000);
+        Serial.print("tentando outra vez");
         tentativas++;
     }
 
