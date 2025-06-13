@@ -7,6 +7,7 @@
 #include "../include/drivers/wifi.hpp"
 
 #include <WiFiClient.h>
+#include <ESP8266WiFi.h> 
 
 bool WifiDriver::connect(const String& ssid, const String& password) {
     WiFi.mode(WIFI_STA);  // <- Torna explícito que é Station

@@ -3,6 +3,8 @@
 #include "drivers/DcMotor.hpp"
 #include "pins.hpp"
 
+#include "tasks/Connection.hpp"  // ou o caminho correto da sua task
+
 using namespace drivers;
 
 DcMotor motorA(
@@ -26,6 +28,9 @@ void setup() {
 
     motorA.enable();
     motorB.enable();
+
+    wifiConnectAndSend(); // apenas chama a função
+
 
 }
 

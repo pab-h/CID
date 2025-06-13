@@ -1,2 +1,6 @@
-// void task 1 
-// void task 2
+#ifndef CONNECTION_HPP
+#define CONNECTION_HPP
+
+void wifiConnectAndSend();
+
+#endif
