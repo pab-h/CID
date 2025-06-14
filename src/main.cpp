@@ -1,43 +1,37 @@
 #include <Arduino.h>
 
-#include "drivers/DcMotor.hpp"
+#include "drivers/LuminositySensor.hpp"
+#include "drivers/TempSensor.hpp"
 #include "pins.hpp"
 
 using namespace drivers;
 
-DcMotor motorA(
-    ENA_PIN,
-    IN1_PIN,
-    IN2_PIN
-);
-
-DcMotor motorB(
-    ENB_PIN,
-    IN3_PIN,
-    IN4_PIN
-);
+LuminositySensor luminositySensor = LuminositySensor(LDR_PIN);
+TempSensor tempSensor = TempSensor(TEMP_PIN);
 
 void setup() {
 
     Serial.begin(9600);
+    delay(1000);
 
-    motorA.setPower(0xFF);
-    motorB.setPower(0xFF);
+    Serial.print("Iniciando sensores...");
 
-    motorA.enable();
-    motorB.enable();
+    tempSensor.begin();
+    luminositySensor.calibrate(0,300);
 
 }
 
 void loop() {
 
-    motorA.clockwise();
-    delay(500);
+    u_int8_t luminosity_percentage = luminositySensor.readPercentage();
 
-    motorB.clockwise();
-    delay(500);
+    Serial.println("Luminosity: " + String(luminosity_percentage) + " %");
+    
+    float temperature = tempSensor.readTemperature();
+    float humidity = tempSensor.readHumidity();
 
-    motorA.counterclockwise();
-    delay(500);
+    Serial.println("Temperature: " + String(temperature) + " C°");
+    Serial.println("Humidity: " + String(humidity) + "%");
 
+    delay(2000);
 }

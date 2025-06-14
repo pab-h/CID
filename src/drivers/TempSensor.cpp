@@ -4,7 +4,7 @@ using namespace drivers;
 
 TempSensor::TempSensor(uint8_t pin) {
     this->pin = pin;
-    this->dht = new DHT(pin, DHT22); // Sempre usa DHT22
+    this->dht = new DHT(pin, DHT11);
 }
 
 void TempSensor::begin() {
