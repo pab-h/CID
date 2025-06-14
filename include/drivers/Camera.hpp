@@ -16,7 +16,7 @@ public:
      * @brief Constructor that defines the PWDN pin for power control.
      * @param pwdnPin GPIO connected to the camera's PWDN pin (use -1 if not using power control).
      */
-    explicit CameraOV7670(int8_t pwdnPin = -1);
+    explicit CameraOV7670();
 
     /**
      * @brief Initializes the camera with the default settings for OV7670.
@@ -51,7 +51,6 @@ public:
     void wakeUp();
 
 private:
-    int8_t _pwdnPin;
     camera_config_t _config;
     bool _initialized;
 
