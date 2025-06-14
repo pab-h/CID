@@ -3,12 +3,10 @@
 
 using namespace drivers;
 
-//Adicionar validações de calibração
 MoistureSensor::MoistureSensor(uint8_t pin) {
 
     this->pin = pin;
 
-    this->offset = 0;
     this->minValue = 0;	
     this->maxValue = 4095;
 
@@ -17,13 +15,13 @@ MoistureSensor::MoistureSensor(uint8_t pin) {
     pinMode(this->pin, INPUT);
 }
 
-int MoistureSensor::read(){
+uint16_t MoistureSensor::read(){
 
-    return max(analogRead(this->pin) - this->offset, 0);
+    return analogRead(this->pin);
 
 }
 
-int MoistureSensor::readPercentage(){
+uint8_t MoistureSensor::readPercentage(){
 
     int percentage = map(this->read(), this->minValue, this->maxValue, 0, 100);
     percentage = constrain(percentage, 0, 100);
@@ -32,9 +30,7 @@ int MoistureSensor::readPercentage(){
 
 }
 
-void MoistureSensor::calibrate(int offset, int minValue, int maxValue){
-
-    this->offset = offset;
+void MoistureSensor::calibrate(uint16_t minValue, uint16_t maxValue){
 
     this->minValue = minValue;
     this->maxValue = maxValue;

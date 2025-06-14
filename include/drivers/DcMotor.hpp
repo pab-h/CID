@@ -22,7 +22,7 @@ namespace drivers {
         public:
 
             DcMotor(u_int8_t en, u_int8_t inl, u_int8_t inr);
-
+            //motor angle como parametro da função de rodar
             void clockwise();
             void counterclockwise();
             
