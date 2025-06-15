@@ -17,6 +17,7 @@ namespace entity {
         public: 
 
             Travel(Step* steps, uint lenght);
+            ~Travel();
 
             Step* nextStep();
 
