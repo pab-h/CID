@@ -3,7 +3,7 @@
 
 using namespace drivers;
 
-DcMotor::DcMotor(u_int8_t en, u_int8_t inl, u_int8_t inr) {
+DcMotor::DcMotor(uint8_t en, uint8_t inl, uint8_t inr) {
 
     this->power = 0;
 
@@ -31,7 +31,7 @@ void DcMotor::counterclockwise() {
 
 }
 
-void DcMotor::setPower(u_int8_t pwm) {
+void DcMotor::setPower(uint8_t pwm) {
 
     this->power = power;
 
