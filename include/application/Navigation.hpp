@@ -1,7 +1,7 @@
 #include "drivers/DcMotor.hpp"
 #include "drivers/RotaryEncoder.hpp"
 
-#include "entity/Reference.hpp"
+#include "entity/Travel.hpp"
 
 using namespace drivers;
 using namespace entity;
@@ -12,18 +12,22 @@ namespace application {
 
         private:
 
-            Reference* travel;
-            uint       travelLenght;
-
             DcMotor* motorLeft;
             DcMotor* motorRight;
 
             RotaryEncoder* hodometer;
 
+            Travel* travel;
+
+            
+
         public:
 
             Navigation();
             ~Navigation();
+
+            void setTravel(Travel* travel);
+            void step();
 
     };
 

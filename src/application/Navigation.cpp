@@ -5,6 +5,8 @@
 #include "drivers/DcMotor.hpp"
 #include "drivers/RotaryEncoder.hpp"
 
+#include "entity/Travel.hpp"
+
 using namespace application;
 using namespace drivers;
 
@@ -26,9 +28,6 @@ Navigation::Navigation() {
         SIGB_PIN
     );
 
-    this->travel       = nullptr;
-    this->travelLenght = 0; 
-
 }
 
 Navigation::~Navigation() {
@@ -37,5 +36,19 @@ Navigation::~Navigation() {
     delete this->motorRight;
     
     delete this->hodometer;
+
+    delete this->travel;
+
+}
+
+void Navigation::setTravel(Travel* travel) {
+
+    this->travel = travel;
+
+}
+
+void Navigation::step() {
+    
+    // Todo: Percorrer caminho reto
 
 }
