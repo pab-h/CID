@@ -3,7 +3,7 @@
 
 using namespace drivers;
 
-RotaryEncoder::RotaryEncoder(u_int8_t siga, u_int8_t sigb) {
+RotaryEncoder::RotaryEncoder(uint8_t siga, uint8_t sigb) {
 
     this->siga = siga;
     this->sigb = sigb;
