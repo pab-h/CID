@@ -1,6 +1,9 @@
+// navigation.hpp
 #pragma once
 
-void vNavigationTask(void* pvParaments);
+namespace tasks {
 
-void vUpdateRotaryEncoderTask(void* pvParaments);
+    void vNavigationTask(void* pvParameters);
+    void vUpdateRotaryEncoderTask(void* pvParameters);
 
+}
