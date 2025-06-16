@@ -1,3 +1,5 @@
+#pragma once
+
 #include "drivers/DcMotor.hpp"
 #include "drivers/RotaryEncoder.hpp"
 

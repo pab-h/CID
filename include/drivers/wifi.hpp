@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef WIFI_DRIVER_HPP
 #define WIFI_DRIVER_HPP
 
