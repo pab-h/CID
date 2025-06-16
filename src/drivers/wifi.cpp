@@ -4,7 +4,7 @@
 //  connect(String nome da rede, String password)
 //  disconnect()
 #include <Arduino.h>
-#include "../include/drivers/wifi.hpp"
+#include "drivers/wifi.hpp"
 
 #include <WiFiClient.h>
 #include <ESP8266WiFi.h> 

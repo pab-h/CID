@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include "../include/drivers/wifi.hpp"
+#include "drivers/wifi.hpp"
 
 void wifiConnectAndSend() {
   WifiDriver wifi;

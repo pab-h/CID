@@ -3,9 +3,11 @@
 #include "drivers/DcMotor.hpp"
 #include "pins.hpp"
 
-#include "tasks/Connection.hpp"  // ou o caminho correto da sua task
+// #include "tasks/connection.hpp"  // ou o caminho correto da sua task
+#include "application/Connection.hpp"
 
 using namespace drivers;
+
 
 DcMotor motorA(
     ENA_PIN,
@@ -29,8 +31,8 @@ void setup() {
     motorA.enable();
     motorB.enable();
 
-    wifiConnectAndSend(); // apenas chama a função
-
+    // wifiConnectAndSend(); // apenas chama a função
+    testDownloadJson();
 
 }
 
