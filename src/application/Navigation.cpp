@@ -36,9 +36,12 @@ Navigation::Navigation() {
     this->motorRight->setPower(0xFF);
 
 
-    this->angle  = 0;
-    this->state  = NavigationState::IDLE;
-    this->travel = nullptr;
+    this->state         = NavigationState::IDLE;
+    this->angle         = 0;
+    this->travel        = nullptr;
+    this->startAngle    = 0;
+    this->startPosition = 0;
+    this->currentStep   = nullptr;
 
 }
 
