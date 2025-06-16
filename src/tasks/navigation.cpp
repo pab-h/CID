@@ -1,30 +1,27 @@
 #include <freertos/FreeRTOS.h>
 #include "application/Navigation.hpp"
+#include "tasks/navigation.hpp"
 
 using namespace application;
 
-void vNavigationTask(void* pvParaments) {
+void tasks::vNavigationTask(void* pvParameters) {
+    
+    Navigation* navigation = static_cast<Navigation*>(pvParameters);
 
-    Navigation* navigation = (Navigation*) pvParaments;
-
-    while(true) {
-
+    while (true) {
         navigation->step();
         vTaskDelay(pdMS_TO_TICKS(3));
-    
     }
 
 }
 
-void vUpdateRotaryEncoderTask(void* pvParaments) {
+void tasks::vUpdateRotaryEncoderTask(void* pvParameters) {
     
-    Navigation* navigation = (Navigation*) pvParaments;
-
-    while(true) {
-
+    Navigation* navigation = static_cast<Navigation*>(pvParameters);
+    
+    while (true) {
         navigation->getRotaryEncoder()->read();
         vTaskDelay(pdMS_TO_TICKS(3));
-    
     }
 
 }
