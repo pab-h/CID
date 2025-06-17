@@ -14,12 +14,10 @@ using namespace drivers;
 Navigation::Navigation() {
 
     this->motorLeft  = new DcMotor(
-        ENA_PIN,
         IN1_PIN,
         IN2_PIN
     );
     this->motorRight = new DcMotor(
-        ENB_PIN,
         IN3_PIN,
         IN4_PIN   
     );
