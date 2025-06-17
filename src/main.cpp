@@ -1,37 +1,45 @@
 #include <Arduino.h>
+#include "globals.hpp"
+#include "tasks/Measurement.hpp"
+#include "application/Measurement.hpp"
 
-#include "drivers/LuminositySensor.hpp"
-#include "drivers/TempSensor.hpp"
-#include "pins.hpp"
+using namespace application;
 
-using namespace drivers;
-
-LuminositySensor luminositySensor = LuminositySensor(LDR_PIN);
-TempSensor tempSensor = TempSensor(TEMP_PIN);
-
-void setup() {
+void setup(){
 
     Serial.begin(9600);
-    delay(1000);
+    while (!Serial){}
 
-    Serial.print("Iniciando sensores...");
+    // Criando as tasks
+    xTaskCreatePinnedToCore(tasks::vSensorManagerTask, "SensorManager", 4096, NULL, 2, &tasks::xSensorManagerTaskHandle, 0);
+    xTaskCreatePinnedToCore(tasks::vMeasureTemperatureHumidityTask, "MeasureTempHum", 2048, NULL, 3, &tasks::xMeasureTempHumTaskHandle, 0);
+    xTaskCreatePinnedToCore(tasks::vMeasureSoilMoistureTask, "MeasureSoilMoisture", 2048, NULL, 2, &tasks::xMeasureSoilMoistureTaskHandle, 0);
+    xTaskCreatePinnedToCore(tasks::vMeasureLuminosityTask, "MeasureLuminosity", 2048, NULL, 2, &tasks::xMeasureLuminosityTaskHandle, 0);
+    // Não criei a task da camera
 
-    tempSensor.begin();
-    luminositySensor.calibrate(0,300);
-
+    Serial.println("Setup concluído, tasks criadas.");
 }
 
 void loop() {
+    // Iniciando a medição dos sensores
+    xTaskNotifyGive(tasks::xSensorManagerTaskHandle);
 
-    u_int8_t luminosity_percentage = luminositySensor.readPercentage();
+    // Esperando um tempo para as tasks processarem
+    vTaskDelay(pdMS_TO_TICKS(3000));
 
-    Serial.println("Luminosity: " + String(luminosity_percentage) + " %");
-    
-    float temperature = tempSensor.readTemperature();
-    float humidity = tempSensor.readHumidity();
+    // Exibindo os dados
+    MeasurementResponse resp = measurement.getMeasures();
 
-    Serial.println("Temperature: " + String(temperature) + " C°");
-    Serial.println("Humidity: " + String(humidity) + "%");
+    // if (resp.error == MeasurementError::NONE) {
+    Serial.printf("Temperatura: %.2f C\n", resp.data.temperature);
+    Serial.printf("Umidade: %.2f %%\n", resp.data.humidity);
+    Serial.printf("Umidade do solo: %d %%\n", resp.data.soilMoisture);
+    Serial.printf("Luminosidade: %d %%\n", resp.data.luminositySensor);
+    Serial.println("---------------------");
+    // } else {
+    //     Serial.printf("Erro na medição: %d\n", static_cast<int>(resp.error));
+    // }
 
-    delay(2000);
+    // Aguarda próximo ciclo
+    vTaskDelay(pdMS_TO_TICKS(2000));
 }

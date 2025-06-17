@@ -11,25 +11,25 @@ CameraOV7670::CameraOV7670()
     _config.ledc_channel = LEDC_CHANNEL_0;
     _config.ledc_timer = LEDC_TIMER_0;
 
-    _config.pin_d0 = CAM_D0;
-    _config.pin_d1 = CAM_D1;
-    _config.pin_d2 = CAM_D2;
-    _config.pin_d3 = CAM_D3;
-    _config.pin_d4 = CAM_D4;
-    _config.pin_d5 = CAM_D5;
-    _config.pin_d6 = CAM_D6;
-    _config.pin_d7 = CAM_D7;
+    // _config.pin_d0 = CAM_D0;
+    // _config.pin_d1 = CAM_D1;
+    // _config.pin_d2 = CAM_D2;
+    // _config.pin_d3 = CAM_D3;
+    // _config.pin_d4 = CAM_D4;
+    // _config.pin_d5 = CAM_D5;
+    // _config.pin_d6 = CAM_D6;
+    // _config.pin_d7 = CAM_D7;
 
-    _config.pin_xclk = CAM_XCLK;
-    _config.pin_pclk = CAM_PCLK;
-    _config.pin_vsync = CAM_VSYNC;
-    _config.pin_href = CAM_HREF;
+    // _config.pin_xclk = CAM_XCLK;
+    // _config.pin_pclk = CAM_PCLK;
+    // _config.pin_vsync = CAM_VSYNC;
+    // _config.pin_href = CAM_HREF;
 
-    _config.pin_sccb_sda = CAM_SDA;
-    _config.pin_sccb_scl = CAM_SCL;
+    // _config.pin_sccb_sda = CAM_SDA;
+    // _config.pin_sccb_scl = CAM_SCL;
 
-    _config.pin_pwdn = CAM_PWDN;
-    _config.pin_reset = CAM_RESET;
+    // _config.pin_pwdn = CAM_PWDN;
+    // _config.pin_reset = CAM_RESET;
 
     _config.xclk_freq_hz = 20000000;
     _config.pixel_format = PIXFORMAT_RGB565;
@@ -74,20 +74,20 @@ void CameraOV7670::releaseFrame(camera_fb_t* frame) {
 }
 
 void CameraOV7670::powerDown() {
-    gpio_set_level((gpio_num_t)CAM_PWDN, 1);
+    //gpio_set_level((gpio_num_t)CAM_PWDN, 1);
     _initialized = false;
 }
 
 void CameraOV7670::wakeUp() {
-    gpio_set_level((gpio_num_t)CAM_PWDN, 0);
+    //gpio_set_level((gpio_num_t)CAM_PWDN, 0);
     begin();
     // Aplicar um pequeno delay depois de inicializá-la
 }
 
 void CameraOV7670::setupPins() {
-    gpio_reset_pin((gpio_num_t)CAM_PWDN);
-    gpio_set_direction((gpio_num_t)CAM_PWDN, GPIO_MODE_OUTPUT);
-    gpio_set_level((gpio_num_t)CAM_PWDN, 0);
+    //gpio_reset_pin((gpio_num_t)CAM_PWDN);
+    //gpio_set_direction((gpio_num_t)CAM_PWDN, GPIO_MODE_OUTPUT);
+    //gpio_set_level((gpio_num_t)CAM_PWDN, 0);
 }
 
 }

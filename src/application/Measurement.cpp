@@ -1,16 +1,12 @@
 #include <application/Measurement.hpp>
 #include <esp_log.h>
+#include <Arduino.h>
 
 using namespace application;
 
 Measurement::Measurement(){
 
-    resetStates();
-
-    // if (!camera.begin()) {
-    //     ESP_LOGE("Measurement", "Falha ao inicializar a câmera");
-    //     sensorStatus.error = MeasurementError::CAMERA_FAIL;
-    // }
+    //resetStates();
 
     dht.begin();
 
@@ -30,8 +26,8 @@ bool Measurement::isAllReady() const {
     return sensorStatus.temperatureReady &&
            sensorStatus.humidityReady &&
            sensorStatus.moistureReady &&
-           sensorStatus.luminosityReady &&
-           sensorStatus.pictureReady;
+           sensorStatus.luminosityReady; //&&
+           //sensorStatus.pictureReady;
 
 }
 
@@ -43,7 +39,7 @@ void Measurement::measureTemperature() {
     if (std::isnan(temp)) {
         sensorStatus.error = MeasurementError::TEMPERATURE_FAIL;
         sensorStatus.temperatureReady = false;
-        ESP_LOGE("Measurement", "Falha na leitura da temperatura");
+        Serial.printf("Measurement %s", "Falha na leitura da temperatura");
     } else {
         sensorData.temperature = temp;
         sensorStatus.temperatureReady = true;
@@ -61,7 +57,7 @@ void Measurement::measureUmidity() {
     if (std::isnan(hum)) {
         sensorStatus.error = MeasurementError::HUMIDITY_FAIL;
         sensorStatus.humidityReady = false;
-        ESP_LOGE("Measurement", "Falha na leitura da umidade");
+        Serial.printf("Measurement %s", "Falha na leitura da umidade");
     } else {
         sensorData.humidity = hum;
         sensorStatus.humidityReady = true;
@@ -76,12 +72,14 @@ void Measurement::measureLuminosity() {
     sensorStatus.isSensing = true;
 
     uint8_t percentage = ldr.readPercentage();
-    if (ldr.read() <= 3) {
+    //ldr.read() <= 3
+    if (false) {
         sensorStatus.error = MeasurementError::LUMINOSITY_FAIL;
         sensorStatus.luminosityReady = false;
-        ESP_LOGE("Measurement", "Falha na leitura da luminosidade (LDR provavelmente desconectado)");
+        Serial.printf("Measurement %s", "Falha na leitura da luminosidade (LDR provavelmente desconectado)");
     } else {
         sensorData.luminositySensor = percentage;
+        Serial.printf("Valor da temperatura: %d", percentage);
         sensorStatus.luminosityReady = true;
     }
 
@@ -97,7 +95,7 @@ void Measurement::measureMoisture() {
     if (soil.read() <= 3) {
         sensorStatus.error = MeasurementError::MOISTURE_FAIL;
         sensorStatus.moistureReady = false;
-        ESP_LOGE("Measurement", "Falha na leitura da umidade do solo (Sensor provavelmente desconectado)");
+        Serial.printf("Measurement %s", "Falha na leitura da umidade do solo (Sensor provavelmente desconectado)");
     } else {
         sensorData.soilMoisture = percentage;
         sensorStatus.moistureReady = true;
@@ -107,39 +105,47 @@ void Measurement::measureMoisture() {
 
 }
 
-//O Ideal seria ligar a câmera assim que o CID entrasse no modo de sensoriamento
-void Measurement::takePicture() {
-    camera.wakeUp();
+// void Measurement::prepareCamera() {
 
-    if (!camera.begin()) {
-        ESP_LOGE("Measurement", "Camera init failed");
-        return;
-    }
+//     camera.wakeUp();
+//     if (!camera.begin()) {
+//         sensorStatus.error = MeasurementError::CAMERA_FAIL;
+//         ESP_LOGE("Measurement", "Falha ao iniciar a câmera no modo de sensoriamento");
+//     }
 
-    camera_fb_t* frame = camera.capture();
-    if (!frame) {
-        ESP_LOGE("Measurement", "Failed to capture image");
-        return;
-    }
+// }
 
-    camera.powerDown();
-}
+// void Measurement::takePicture() {
+//     sensorStatus.isSensing = true;
+
+//     camera_fb_t* frame = camera.capture();
+//     if (!frame) {
+//         sensorStatus.error = MeasurementError::CAMERA_FAIL;
+//         sensorStatus.pictureReady = false;
+//         ESP_LOGE("Measurement", "Falha ao capturar imagem");
+//     } else {
+//         sensorStatus.pictureReady = true;
+//     }
+
+//     camera.powerDown();
+//     sensorStatus.isSensing = false;
+// }
 
 MeasurementResponse Measurement::getMeasures() {
     MeasurementResponse response;
 
     if (sensorStatus.isSensing) {
-        ESP_LOGW("Measurement", "Tentativa de enviar medidas enquanto sensores ainda estão medindo.");
+        Serial.printf("Measurement %s", "Tentativa de enviar medidas enquanto sensores ainda estão medindo.");
         response.error = MeasurementError::BUSY;
         return response;
     }
 
      if (!isAllReady()) {
         if (sensorStatus.error != MeasurementError::NONE) {
-            ESP_LOGE("Measurement", "Erro na medição: %d", static_cast<int>(sensorStatus.error));
+            Serial.printf("Measurement %s", "Erro na medição: %d", static_cast<int>(sensorStatus.error));
             response.error = sensorStatus.error;
         } else {
-            ESP_LOGW("Measurement", "Medição incompleta: nem todos sensores estão prontos");
+            Serial.printf("Measurement %s", "Medição incompleta: nem todos sensores estão prontos");
             response.error = MeasurementError::INCOMPLETE;
         }
         return response;

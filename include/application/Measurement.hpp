@@ -57,7 +57,7 @@ namespace application{
             drivers::TempSensor dht;
             drivers::LuminositySensor ldr;
             drivers::MoistureSensor soil;
-            drivers::CameraOV7670 camera;
+            //drivers::CameraOV7670 camera;
 
         public: 
 
@@ -70,6 +70,7 @@ namespace application{
             void measureUmidity();
             void measureLuminosity();
             void measureMoisture();
+            void prepareCamera();
             void takePicture();
 
             MeasurementResponse getMeasures();
