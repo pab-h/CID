@@ -14,6 +14,8 @@ using namespace entity      ;
 
 void setup() {
 
+    Serial.begin(9600);
+
     Step* steps = new Step[3];
     
     steps[0] = Step(10,  0, false);
