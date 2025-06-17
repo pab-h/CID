@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include <pins.hpp>
 
 namespace drivers{
 
@@ -15,8 +16,8 @@ namespace drivers{
         private:
 
             uint8_t pin; ///< Analog pin conected to sensor
-            u_int16_t minValue; ///< Calibrated value for dry soil.
-            u_int16_t maxValue; ///< Calibrated value for wet soil.
+            uint16_t minValue; ///< Calibrated value for dry soil.
+            uint16_t maxValue; ///< Calibrated value for wet soil.
             bool calibrated; ///< Indicates if sensor is been calibrated.
 
         public:
@@ -26,7 +27,7 @@ namespace drivers{
              * 
              * @param pin Analog pin number where the sensor is connected.
              */
-            LuminositySensor(u_int8_t pin);
+            LuminositySensor(u_int8_t pin = LDR_PIN);
 
             /**
              * @brief Read raw analogic value from the sensor.
@@ -38,7 +39,7 @@ namespace drivers{
             * 
             * Uses minValue and maxValue to map the raw reading to 0-100%.
             * 
-            * Return uint_16 Percentage of luminosity (0 = darkest, 100% = brightest).
+            * Return uint_8 Percentage of luminosity (0 = darkest, 100% = brightest).
             */
             uint8_t readPercentage();
 

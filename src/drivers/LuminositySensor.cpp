@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <drivers/LuminositySensor.hpp>
+#include <env.hpp>
 
 using namespace drivers;
 
@@ -7,8 +8,8 @@ LuminositySensor::LuminositySensor(u_int8_t pin){
 
     this->pin = pin;
     
-    this->minValue = 0;
-    this->maxValue = 4095;
+    this->minValue = LUMINOSITY_MIN_VALUE;
+    this->maxValue = LUMINOSITY_MAX_VALUE;
 
     this-> calibrated = false;
 
@@ -33,6 +34,7 @@ void LuminositySensor::calibrate(u_int16_t minValue, u_int16_t maxValue){
 
     this->minValue = minValue;
     this->maxValue = maxValue;
+    
     this->calibrated = true;
 
 }

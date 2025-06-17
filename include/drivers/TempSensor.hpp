@@ -1,12 +1,13 @@
 #pragma once
 
 #include <Arduino.h>
+#include <pins.hpp>
 #include <DHT.h>
 
 
 namespace drivers{
 
-    class TempSensor{
+    class   TempSensor{
 
         private:
             
@@ -15,7 +16,7 @@ namespace drivers{
 
         public:
 
-            TempSensor(u_int8_t pin);
+            TempSensor(u_int8_t pin = TEMP_PIN);
 
             void begin();
             float readTemperature(bool fahrenheiy = false, bool force = false) const;

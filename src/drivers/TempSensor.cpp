@@ -1,14 +1,15 @@
 #include "drivers/TempSensor.hpp"
+#include <env.hpp>
 
 using namespace drivers;
 
 TempSensor::TempSensor(uint8_t pin) {
     this->pin = pin;
-    this->dht = new DHT(pin, DHT11);
+    this->dht = new DHT(pin, DHTTYPE);
 }
 
 void TempSensor::begin() {
-    dht->begin(); // Inicializa o sensor DHT
+    dht->begin();
 }
 
 float TempSensor::readTemperature(bool fahrenheit, bool force) const{

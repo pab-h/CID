@@ -13,11 +13,11 @@
     /* Pinos do sensor de umidade*/
     #define SOIL_MOISTURE_PIN 0x77 //pino analógico
 
-    /* Pinos do sensor de temperatura*/
-    #define TEMP_PIN D7 // Pino digital
-
     /* Pinos do sensor de luminosidade*/
     #define LDR_PIN A0 // Pino analógico
+
+    /* Pinos do sensor de temperatura*/
+    #define TEMP_PIN 13 // Pino digital
 
     /* Pinos da câmera*/
     #define CAM_SDA         0x77 // Pino de dados I2C
@@ -27,7 +27,7 @@
     #define CAM_PCLK        0x77 // Clock do pixel
     #define CAM_XCLK        0x77 // Clock externo
     #define CAM_PWDN        0x77 // Power down (desliga)
-    #define CAM_RESET       0x77
+    #define CAM_RESET       0x77 // Reset da câmera
 
     // Pinos de dados da câmera
     #define CAM_D0 0x77

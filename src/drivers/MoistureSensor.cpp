@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "drivers/MoistureSensor.hpp"
+#include <env.hpp>
 
 using namespace drivers;
 
@@ -7,8 +8,8 @@ MoistureSensor::MoistureSensor(uint8_t pin) {
 
     this->pin = pin;
 
-    this->minValue = 0;	
-    this->maxValue = 4095;
+    this->minValue = MOISURE_MIN_VALUE;	
+    this->maxValue = MOISURE_MAX_VALUE;
 
     this->calibrated = false;
 
