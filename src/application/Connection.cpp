@@ -5,19 +5,27 @@
 
 //enviar os dados
 
-#include <ESP8266HTTPClient.h>
+// #include <ESP8266HTTPClient.h>
 
 #include <ArduinoJson.h>
 
+#include <WiFi.h>
+#include <HTTPClient.h>
+
+
 #include <WiFiClient.h>
-#include <ESP8266WiFi.h> 
+// #include <ESP8266WiFi.h> 
 
 #include "entity/Step.hpp"
 #include "entity/Travel.hpp"
 #include "drivers/wifi.hpp"
 #include "application/Connection.hpp"
+#include "entity/SensorData.hpp"
 
 using namespace entity;
+extern TaskHandle_t sensorReaderHandle;
+extern TaskHandle_t dataSenderHandle;
+
 
 bool deserializeSteps(const char* jsonBuffer, Step*& stepsOut, uint& countOut) {
     // Ajuste o tamanho conforme o tamanho máximo esperado do JSON
@@ -92,5 +100,52 @@ void testDownloadJson() {
     } else {
         Serial.println("WiFi não conectado.");
     }
+    Serial.println("cheguei até a converter de json pra algo usavel");
+    xTaskNotifyGive(sensorReaderHandle);
+    Serial.println("acordei o preguiçoso!");
+
 }
 
+String gerarJson(SensorData* leituras, uint count) {
+    StaticJsonDocument<512> doc;
+    JsonArray array = doc.to<JsonArray>();
+
+    for (uint i = 0; i < count; i++) {
+        JsonObject obj = array.createNestedObject();
+        obj["temperature"] = leituras[i].temperature;
+        obj["moisture"] = leituras[i].moisture;
+        obj["luminosity"] = leituras[i].luminosity;
+        // obj["motorVelocity"] = leituras[i].motorVelocity;
+        // obj["cameraImagemBase64"] = leituras[i].cameraImagemBase64;
+    }
+
+    String json;
+    Serial.println("BLUA BLA BLA BLUE BLA");
+    serializeJsonPretty(doc, json);
+    xTaskNotifyGive(dataSenderHandle);
+    Serial.println("acordei o segundo preguiçoso!");
+    return json;
+}
+
+void enviarDadosParaApi(SensorData* leituras, uint count) {
+    String json = gerarJson(leituras, count);
+    Serial.println("JSON a ser enviado:");
+    Serial.println(json);
+
+    // Para enviar via POST futuramente:
+    /*
+    if (WiFi.status() == WL_CONNECTED) {
+        WiFiClient client;
+        HTTPClient http;
+        http.begin(client, "http://sua-api.com/dados");
+        http.addHeader("Content-Type", "application/json");
+
+        int httpResponseCode = http.POST(json);
+        Serial.printf("Resposta da API: %d\n", httpResponseCode);
+
+        http.end();
+    } else {
+        Serial.println("Wi-Fi não conectado.");
+    }
+    */
+}

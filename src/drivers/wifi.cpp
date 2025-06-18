@@ -7,18 +7,22 @@
 #include "drivers/wifi.hpp"
 
 #include <WiFiClient.h>
-#include <ESP8266WiFi.h> 
+// #include <ESP8266WiFi.h> 
+
+#include <WiFi.h>
+
+
 
 bool WifiDriver::connect(const String& ssid, const String& password) {
-    WiFi.mode(WIFI_STA);  // <- Torna explícito que é Station
+    WiFi.mode(WIFI_STA);  
+
     WiFi.begin(ssid.c_str(), password.c_str());
     
     int tentativas = 0;
 
     while (WiFi.status() != WL_CONNECTED && tentativas < 10) {
-        Serial.print(".");
         delay(1000);
-        Serial.print("tentando outra vez");
+        Serial.println("tentando conectar novamente \n");
         tentativas++;
     }
 
