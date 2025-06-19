@@ -3,58 +3,50 @@
 
 using namespace drivers;
 
-DcMotor::DcMotor(uint8_t inl, uint8_t inr) {
+DcMotor::DcMotor(uint8_t en, uint8_t inl, uint8_t inr) {
 
-    this->isClockwise = true;
-
-    this->power = 0x00;
-
+    this->en  = en;
     this->inl = inl;
     this->inr = inr;
 
+    pinMode(this->en , OUTPUT);
     pinMode(this->inl, OUTPUT);
     pinMode(this->inr, OUTPUT);
+
+    this->disable();
+    this->clockwise();
 
 }
 
 void DcMotor::clockwise() {
 
-    digitalWrite(this->inl, this->power);
-    digitalWrite(this->inr, 0x00);
-
-    this->isClockwise = true;
+    digitalWrite(this->inl, HIGH);
+    digitalWrite(this->inr, LOW);
 
 }
 
 void DcMotor::counterclockwise() {
 
-    digitalWrite(this->inl, 0x00);
-    digitalWrite(this->inr, this->power);
+    digitalWrite(this->inl, LOW);
+    digitalWrite(this->inr, HIGH);
 
-    this->isClockwise = false;
+}
+
+void DcMotor::enable() {
+
+    analogWrite(this->en, this->power);
+
+}
+
+void DcMotor::disable() {
+
+    analogWrite(this->en, 0x00);
 
 }
 
 void DcMotor::setPower(uint8_t pwm) {
 
     this->power = pwm;
-
-}
-
-void DcMotor::disable() {
-
-    analogWrite(this->inl, 0x00);
-    analogWrite(this->inr, 0x00);
-
-}
-
-void DcMotor::enable() {
-
-    if (this->isClockwise) {
-        return this->clockwise();
-    }
-
-    this->counterclockwise();
 
 }
 
