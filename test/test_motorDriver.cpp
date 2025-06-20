@@ -10,43 +10,53 @@ DcMotor* motor;
 
 void setup() {
 
-
     Serial.begin(9600);
 
     motor = new DcMotor(
         ENA_PIN,
         IN1_PIN,
-        IN2_PIN
+        IN2_PIN,
+        PWM_CHANNEL_0
     );
 
-}
-
-
-void loop() {
 
     Serial.println("[TEST] Rodando os testes do Driver do motor");
-
     
-    Serial.println("[TEST] Ativando o motor com 100% da potência");
     motor->setPower(0xFF);
-    motor->enable();
 
     Serial.println("[TEST] Ativando o motor no sentido horário");
+
     motor->clockwise();
-    delay(1000);
+    motor->enable();
+
+    delay(2000);
 
     Serial.println("[TEST] Ativando o motor no sentido anti-horário");
+
+    motor->disable();
+    delay(500);
+
     motor->counterclockwise();
-    delay(1000);
+    motor->enable();
+    delay(2000);
 
+    motor->disable();
+    delay(500);
 
-    Serial.println("[TEST] Ativando o motor com 25% da potência");
-    motor->setPower(0x04);
-    delay(1000);
+    Serial.println("[TEST] Decréscimo gradual até zerar a potência");
+
+    for (int i = 255; i >= 0; i -= 25) {
+        motor->setPower(i);
+        motor->enable();
+
+        delay(250);
+    }
 
     Serial.println("[TEST] Desativando o motor");
     motor->disable();
-    delay(1000);
 
 }
+
+
+void loop() {}
 
