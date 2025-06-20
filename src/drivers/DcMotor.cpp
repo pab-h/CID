@@ -3,15 +3,18 @@
 
 using namespace drivers;
 
-DcMotor::DcMotor(uint8_t en, uint8_t inl, uint8_t inr) {
+DcMotor::DcMotor(uint8_t en, uint8_t inl, uint8_t inr, uint8_t pwmChannel) {
 
-    this->en  = en;
-    this->inl = inl;
-    this->inr = inr;
+    this->en         = en;
+    this->inl        = inl;
+    this->inr        = inr;
+    this->pwmChannel = pwmChannel;
 
-    pinMode(this->en , OUTPUT);
     pinMode(this->inl, OUTPUT);
     pinMode(this->inr, OUTPUT);
+
+    ledcSetup(this->pwmChannel, 490, 8);
+    ledcAttachPin(this->en, this->pwmChannel);
 
     this->disable();
     this->clockwise();
@@ -34,13 +37,13 @@ void DcMotor::counterclockwise() {
 
 void DcMotor::enable() {
 
-    analogWrite(this->en, this->power);
+    ledcWrite(this->pwmChannel, this->power);
 
 }
 
 void DcMotor::disable() {
 
-    analogWrite(this->en, 0x00);
+    ledcWrite(this->pwmChannel, 0x0000);
 
 }
 

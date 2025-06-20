@@ -16,12 +16,14 @@ Navigation::Navigation() {
     this->motorLeft  = new DcMotor(
         ENA_PIN,
         IN1_PIN,
-        IN2_PIN
+        IN2_PIN,
+        PWM_CHANNEL_0
     );
     this->motorRight = new DcMotor(
         ENB_PIN,
         IN3_PIN,
-        IN4_PIN   
+        IN4_PIN,
+        PWM_CHANNEL_1
     );
 
     this->hodometer = new RotaryEncoder(
