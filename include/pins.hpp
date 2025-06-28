@@ -1,14 +1,5 @@
 #pragma once
 
-/**
- * PWM channels
- * 
- * 0, 1: with 490hz and 8 bit resolution. It's used in navigation motors
- */
-
-#define PWM_CHANNEL_0 0
-#define PWM_CHANNEL_1 1
-
 /* H-Bridge pins */
 
 #define ENA_PIN 4
