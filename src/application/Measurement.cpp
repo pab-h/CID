@@ -6,10 +6,57 @@ using namespace application;
 
 Measurement::Measurement(){
 
-    //resetStates();
-
     dht.begin();
 
+}
+
+inline uint8_t Measurement::to_uint8(MeasurementError err) {
+    return static_cast<uint8_t>(err);
+}
+
+inline bool Measurement::hasError(uint8_t flags, MeasurementError error) {
+    return (flags & Measurement::to_uint8(error)) != 0;
+}
+
+inline void Measurement::addError(uint8_t &flags, MeasurementError error) {
+    flags |= to_uint8(error);
+}
+
+inline void Measurement::removeError(uint8_t &flags, MeasurementError error) {
+    flags &= ~Measurement::to_uint8(error);
+}
+
+inline void Measurement::printErrors(u_int8_t flags) {
+
+    Serial.println("Errors:");
+
+    if (flags == 0) {
+        Serial.println("NONE");
+        return;
+    }
+
+    if (flags & static_cast<uint8_t>(MeasurementError::BUSY)) {
+        Serial.println("BUSY");
+    }
+    if (flags & static_cast<uint8_t>(MeasurementError::INCOMPLETE)) {
+        Serial.println("INCOMPLETE");
+    }
+    if (flags & static_cast<uint8_t>(MeasurementError::TEMPERATURE_FAIL)) {
+        Serial.println("TEMPERATURE FAIL");
+    }
+    if (flags & static_cast<uint8_t>(MeasurementError::HUMIDITY_FAIL)) {
+        Serial.println("HUMIDITY FAIL");
+    }
+    if (flags & static_cast<uint8_t>(MeasurementError::MOISTURE_FAIL)) {
+        Serial.println("MOISTURE FAIL");
+    }
+    if (flags & static_cast<uint8_t>(MeasurementError::LUMINOSITY_FAIL)) {
+        Serial.println("LUMINOSITY FAIL");
+    }
+
+    // if (static_cast<uint8_t>(flags & MeasurementError::CAMERA_FAIL)){
+    //     Serial.println("- CAMERA FAIL")
+    //};
 }
 
 void Measurement::resetStates() {
@@ -17,48 +64,61 @@ void Measurement::resetStates() {
     sensorData = SensorData{};
     sensorStatus = SensorStatus{};
     sensorStatus.isSensing = false;
-    sensorStatus.error = MeasurementError::NONE;
+    sensorStatus.error = to_uint8(MeasurementError::NONE); 
 
 }
+
 
 bool Measurement::isAllReady() const {
 
     return sensorStatus.temperatureReady &&
            sensorStatus.humidityReady &&
            sensorStatus.moistureReady &&
-           sensorStatus.luminosityReady; //&&
-           //sensorStatus.pictureReady;
+           sensorStatus.luminosityReady; 
 
 }
 
 void Measurement::measureTemperature() {
 
     sensorStatus.isSensing = true;
-
     float temp = dht.readTemperature();
+
     if (std::isnan(temp)) {
-        sensorStatus.error = MeasurementError::TEMPERATURE_FAIL;
+
+        addError(sensorStatus.error, MeasurementError::TEMPERATURE_FAIL);
+
         sensorStatus.temperatureReady = false;
-        Serial.printf("Measurement %s", "Falha na leitura da temperatura");
+        Serial.printf("Measurement %s", "Falha na leitura da temperatura \n");
+
     } else {
+
+        removeError(sensorStatus.error, MeasurementError::TEMPERATURE_FAIL);
+
         sensorData.temperature = temp;
         sensorStatus.temperatureReady = true;
+
     }
 
     sensorStatus.isSensing = false;
 
 }
 
-void Measurement::measureUmidity() {
+void Measurement::measureHumidity() {
 
     sensorStatus.isSensing = true;
-
     float hum = dht.readHumidity();
+
     if (std::isnan(hum)) {
-        sensorStatus.error = MeasurementError::HUMIDITY_FAIL;
+            
+        addError(sensorStatus.error, MeasurementError::HUMIDITY_FAIL);
+        
         sensorStatus.humidityReady = false;
-        Serial.printf("Measurement %s", "Falha na leitura da umidade");
+        Serial.printf("Measurement %s", "Falha na leitura da umidade \n");
+
     } else {
+        
+        removeError(sensorStatus.error, MeasurementError::HUMIDITY_FAIL);
+
         sensorData.humidity = hum;
         sensorStatus.humidityReady = true;
     }
@@ -70,17 +130,22 @@ void Measurement::measureUmidity() {
 void Measurement::measureLuminosity() {
 
     sensorStatus.isSensing = true;
-
     uint8_t percentage = ldr.readPercentage();
-    //ldr.read() <= 3
-    if (false) {
-        sensorStatus.error = MeasurementError::LUMINOSITY_FAIL;
+
+    if (ldr.read() <= 1) {
+        
+        addError(sensorStatus.error, MeasurementError::LUMINOSITY_FAIL);
+        
         sensorStatus.luminosityReady = false;
-        Serial.printf("Measurement %s", "Falha na leitura da luminosidade (LDR provavelmente desconectado)");
+        Serial.printf("Measurement %s", "Falha na leitura da luminosidade (LDR provavelmente desconectado)\n");
+
     } else {
-        sensorData.luminositySensor = percentage;
-        Serial.printf("Valor da temperatura: %d", percentage);
+
+        removeError(sensorStatus.error, MeasurementError::LUMINOSITY_FAIL);
+
+        sensorData.luminosity = percentage;
         sensorStatus.luminosityReady = true;
+        // Serial.printf("Valor da temperatura: %d", percentage);
     }
 
     sensorStatus.isSensing = false;
@@ -90,13 +155,19 @@ void Measurement::measureLuminosity() {
 void Measurement::measureMoisture() {
 
     sensorStatus.isSensing = true;
-
     uint16_t percentage = soil.readPercentage();
+
     if (soil.read() <= 3) {
-        sensorStatus.error = MeasurementError::MOISTURE_FAIL;
+
+        addError(sensorStatus.error, MeasurementError::MOISTURE_FAIL);
+
         sensorStatus.moistureReady = false;
-        Serial.printf("Measurement %s", "Falha na leitura da umidade do solo (Sensor provavelmente desconectado)");
+        Serial.printf("Measurement %s", "Falha na leitura da umidade do solo (Sensor provavelmente desconectado)\n");
+
     } else {
+
+        removeError(sensorStatus.error, MeasurementError::MOISTURE_FAIL);
+
         sensorData.soilMoisture = percentage;
         sensorStatus.moistureReady = true;
     }
@@ -105,53 +176,29 @@ void Measurement::measureMoisture() {
 
 }
 
-// void Measurement::prepareCamera() {
-
-//     camera.wakeUp();
-//     if (!camera.begin()) {
-//         sensorStatus.error = MeasurementError::CAMERA_FAIL;
-//         ESP_LOGE("Measurement", "Falha ao iniciar a câmera no modo de sensoriamento");
-//     }
-
-// }
-
-// void Measurement::takePicture() {
-//     sensorStatus.isSensing = true;
-
-//     camera_fb_t* frame = camera.capture();
-//     if (!frame) {
-//         sensorStatus.error = MeasurementError::CAMERA_FAIL;
-//         sensorStatus.pictureReady = false;
-//         ESP_LOGE("Measurement", "Falha ao capturar imagem");
-//     } else {
-//         sensorStatus.pictureReady = true;
-//     }
-
-//     camera.powerDown();
-//     sensorStatus.isSensing = false;
-// }
-
 MeasurementResponse Measurement::getMeasures() {
+
     MeasurementResponse response;
 
     if (sensorStatus.isSensing) {
-        Serial.printf("Measurement %s", "Tentativa de enviar medidas enquanto sensores ainda estão medindo.");
-        response.error = MeasurementError::BUSY;
+
+        response.error = to_uint8(MeasurementError::BUSY);
+        Serial.printf("Measurement %s", "Tentativa de enviar medidas enquanto sensores ainda estão medindo. \n");
+        
         return response;
+
     }
 
-     if (!isAllReady()) {
-        if (sensorStatus.error != MeasurementError::NONE) {
-            Serial.printf("Measurement %s", "Erro na medição: %d", static_cast<int>(sensorStatus.error));
-            response.error = sensorStatus.error;
-        } else {
-            Serial.printf("Measurement %s", "Medição incompleta: nem todos sensores estão prontos");
-            response.error = MeasurementError::INCOMPLETE;
-        }
-        return response;
+    if (sensorStatus.error != 0) {
+
+        printErrors(sensorStatus.error);
+        response.error = sensorStatus.error;
+
+
     }
 
     response.data = sensorData;
     response.error = sensorStatus.error;
     return response;
+
 }

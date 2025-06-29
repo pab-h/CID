@@ -5,13 +5,14 @@
 
 namespace drivers{
 
+
+    /**
+     * @brief Driver for analog luminosity sensor.
+     * 
+     * This class provides methods to read raw and percentage values from
+     * an analog LuminositySensor. Supports manual calibration.
+     */
     class LuminositySensor{
-        /**
-         * @brief Driver for analog luminosity sensor.
-         * 
-         * This class provides methods to read raw and percentage values from
-         * an analog LuminositySensor. Supports manual calibration.
-         */
 
         private:
 

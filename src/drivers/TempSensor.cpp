@@ -1,4 +1,4 @@
-#include "drivers/TempSensor.hpp"
+#include "drivers/TempHumSensor.hpp"
 #include <env.hpp>
 
 using namespace drivers;

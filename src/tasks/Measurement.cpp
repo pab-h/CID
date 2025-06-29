@@ -16,29 +16,27 @@ namespace tasks {
     TaskHandle_t xSensorManagerTaskHandle = nullptr;
 
     void vSensorManagerTask(void* pvParameters) {
+
+        TaskHandle_t xMainHandle = static_cast<TaskHandle_t>(pvParameters);
     
         while (true) {
 
-            Serial.println("Cheguei em 1");
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
             //measurement.prepareCamera();
-            Serial.println("Cheguei em 2");
             xTaskNotifyGive(xMeasureTempHumTaskHandle);
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
-            Serial.println("Cheguei em 3");
             xTaskNotifyGive(xMeasureSoilMoistureTaskHandle);
             xTaskNotifyGive(xMeasureLuminosityTaskHandle);
             
-            Serial.println("Cheguei em 4");
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
             // xTaskNotifyGive(xTakePictureTaskHandle);
             // ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
-            vTaskSuspend(NULL);
+            xTaskNotifyGive(xMainHandle);
         }
     
     }
@@ -50,25 +48,26 @@ namespace tasks {
         const TickType_t minInterval = pdMS_TO_TICKS(2000);
     
         while (true) {
+
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
-
-            Serial.println("Cheguei na task de medir a temperatura");
             TickType_t now = xTaskGetTickCount();
+
             if (now - lastExecution < minInterval) {
+
                 Serial.printf("TemperatureTask %s", "Chamada ignorada (intervalo < 2s)");
-                // Notifica a manager que terminou para não travar o fluxo
                 xTaskNotifyGive(xSensorManagerTaskHandle);
                 continue;
+    
             }
+    
             lastExecution = now;
 
-            vTaskSuspendAll();
             measurement.measureTemperature();
-            measurement.measureUmidity();
-            xTaskResumeAll();
+            measurement.measureHumidity();
 
             xTaskNotifyGive(xSensorManagerTaskHandle);
+
         }
 
     }
@@ -76,11 +75,13 @@ namespace tasks {
     void vMeasureSoilMoistureTask(void* pvParameters) {
 
         while (true) {
+
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-            Serial.println("Cheguei na task de medir o solo");
+
             measurement.measureMoisture();
 
             xTaskNotifyGive(xSensorManagerTaskHandle);
+
         }
 
     }
@@ -88,27 +89,15 @@ namespace tasks {
     void vMeasureLuminosityTask(void* pvParameters) {
 
         while (true) {
+            
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-            Serial.println("Cheguei na task de medir a luminosidade");
+
             measurement.measureLuminosity();
 
             xTaskNotifyGive(xSensorManagerTaskHandle);
+            
         }
 
-    }
-
-    // Alta prioridade
-    void vTakePictureTask(void* pvParameters) {
-
-        while (true) {
-            ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-
-            vTaskSuspendAll();
-            measurement.takePicture();
-            xTaskResumeAll();
-
-            xTaskNotifyGive(xSensorManagerTaskHandle);
-        }
     }
 
 }

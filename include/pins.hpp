@@ -11,13 +11,13 @@
     // #define IN4_PIN 0x77
 
     /* Pinos do sensor de umidade*/
-    #define SOIL_MOISTURE_PIN GPIO_NUM_32 //pino analógico
+    #define SOIL_MOISTURE_PIN 6 //pino analógico
 
     /* Pinos do sensor de luminosidade*/
-    #define LDR_PIN GPIO_NUM_33 // Pino analógico
+    #define LDR_PIN  8 // Pino analógico
 
     /* Pinos do sensor de temperatura*/
-    #define TEMP_PIN GPIO_NUM_5 // Pino digital
+    #define TEMP_PIN 16 // Pino digital
 
     // /* Pinos da câmera*/
     // #define CAM_SDA         0x77 // Pino de dados I2C
