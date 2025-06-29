@@ -2,6 +2,7 @@
 
 #include "drivers/DcMotor.hpp"
 #include "pins.hpp"
+#include "board.hpp"
 
 using namespace drivers;
 

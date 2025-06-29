@@ -1,5 +1,7 @@
 #include <Arduino.h>
+
 #include "drivers/DcMotor.hpp"
+#include "board.hpp"
 
 using namespace drivers;
 
@@ -13,7 +15,7 @@ DcMotor::DcMotor(uint8_t en, uint8_t inl, uint8_t inr, uint8_t pwmChannel) {
     pinMode(this->inl, OUTPUT);
     pinMode(this->inr, OUTPUT);
 
-    ledcSetup(this->pwmChannel, 490, 8);
+    ledcSetup(this->pwmChannel, PWM_FREQUENCY, PWM_RESOLUTION);
     ledcAttachPin(this->en, this->pwmChannel);
 
     this->disable();

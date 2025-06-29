@@ -1,5 +1,6 @@
 #include "pins.hpp"
 #include "env.hpp"
+#include "board.hpp"
 
 #include "application/Navigation.hpp"
 
