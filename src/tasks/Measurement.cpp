@@ -1,10 +1,8 @@
-#include "tasks/Measurement.hpp"
-#include "globals.hpp"
-
+#include <Arduino.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
-#include <esp_log.h>
-#include <Arduino.h>
+#include "tasks/Measurement.hpp"
+#include "globals.hpp"
 
 namespace tasks {
 
@@ -41,7 +39,6 @@ namespace tasks {
     
     }
 
-    // Alta prioridade
     void vMeasureTemperatureHumidityTask(void* pvParameters) {
 
         TickType_t lastExecution = 0;    

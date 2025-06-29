@@ -24,7 +24,6 @@ void setup(){
 }
 
 void loop() {
-    TaskHandle_t loopTaskHandle = xTaskGetCurrentTaskHandle();
 
     xTaskNotifyGive(tasks::xSensorManagerTaskHandle);
     ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(3000));
@@ -35,12 +34,9 @@ void loop() {
     Serial.printf("Umidade: %.2f %%\n", resp.data.humidity);
     Serial.printf("Umidade do solo: %d %%\n", resp.data.soilMoisture);
     Serial.printf("Luminosidade: %d %%\n", resp.data.luminosity);
-
-    measurement.measureTemperature();
-    resp = measurement.getMeasures();
-
-    Serial.printf("Temperatura medida diretamente -> %2f", resp.data.temperature);
-    Serial.println("---------------------");
+    
+    Serial.println("-----------------------");
 
     vTaskDelay(pdMS_TO_TICKS(2000));
+
 }

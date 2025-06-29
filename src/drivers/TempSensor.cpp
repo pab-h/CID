@@ -4,8 +4,10 @@
 using namespace drivers;
 
 TempSensor::TempSensor(uint8_t pin) {
+
     this->pin = pin;
     this->dht = new DHT(pin, DHTTYPE);
+
 }
 
 void TempSensor::begin() {
@@ -21,8 +23,11 @@ float TempSensor::readHumidity(bool force) const{
 }
 
 bool TempSensor::isReady() const{
+
     float t = dht->readTemperature();
     float h = dht->readHumidity();
+
     return !isnan(t) && !isnan(h);
+
 }
 
