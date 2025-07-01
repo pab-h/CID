@@ -2,13 +2,19 @@
 #include "globals.hpp"
 #include "tasks/Measurement.hpp"
 #include "application/Measurement.hpp"
+#include "drivers/Display.hpp"
 
 using namespace application;
 
+Display display;
+
 void setup(){
 
-    Serial.begin(9600);
+    Serial.begin(115200);
     while (!Serial){}
+
+    initGlobals();
+    display.begin();
 
     TaskHandle_t loopHandle = xTaskGetCurrentTaskHandle();
 
@@ -20,6 +26,10 @@ void setup(){
 
 
     Serial.println("Setup concluído, tasks criadas.");
+
+    display.showBatteryIcon(95);
+    display.showSystemStatus("Sensoriando");
+
     
 }
 

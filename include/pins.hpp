@@ -1,41 +1,45 @@
-    #pragma once
+#pragma once
 
-    // /* Pinos da ponte-H */
+// /* Pinos da ponte-H */
 
-    // #define ENA_PIN 0x77
-    // #define ENB_PIN 0x77
+// #define ENA_PIN 0x77
+// #define ENB_PIN 0x77
 
-    // #define IN1_PIN 0x77
-    // #define IN2_PIN 0x77
-    // #define IN3_PIN 0x77
-    // #define IN4_PIN 0x77
+// #define IN1_PIN 0x77
+// #define IN2_PIN 0x77
+// #define IN3_PIN 0x77
+// #define IN4_PIN 0x77
 
-    /* Pinos do sensor de umidade*/
-    #define SOIL_MOISTURE_PIN 6 //pino analógico
+/* Pinos do sensor de umidade*/
+#define SOIL_MOISTURE_PIN 4 //pino analógico
 
-    /* Pinos do sensor de luminosidade*/
-    #define LDR_PIN  8 // Pino analógico
+/* Pinos do sensor de luminosidade*/
+#define LDR_PIN  6  // Pino analógico
 
-    /* Pinos do sensor de temperatura*/
-    #define TEMP_PIN 16 // Pino digital
+/* Pinos do sensor de temperatura*/
+#define TEMP_PIN 5 // Pino digital
 
-    // /* Pinos da câmera*/
-    // #define CAM_SDA         0x77 // Pino de dados I2C
-    // #define CAM_SCL         0x77 // Pino de clock I2C
-    // #define CAM_VSYNC       0x77 // Sincronia vertical
-    // #define CAM_HREF        0x77 // Referência horizontal (indica inicio/fim da linha)
-    // #define CAM_PCLK        0x77 // Clock do pixel
-    // #define CAM_XCLK        0x77 // Clock externo
-    // #define CAM_PWDN        0x77 // Power down (desliga)
-    // #define CAM_RESET       0x77 // Reset da câmera
+/* Pinos I2C*/
+#define I2C_SCL 11
+#define I2C_SDA 12
 
-    // // Pinos de dados da câmera
-    // #define CAM_D0 0x77
-    // #define CAM_D1 0x77
-    // #define CAM_D2 0x77
-    // #define CAM_D3 0x77
-    // #define CAM_D4 0x77
-    // #define CAM_D5 0x77
-    // #define CAM_D6 0x77
-    // #define CAM_D7 0x77
+// /* Pinos da câmera*/
+// #define CAM_SDA         15   // Pino de dados I2C
+// #define CAM_SCL         7  // Pino de clock I2C
+// #define CAM_VSYNC       16  // Sincronia vertical
+// #define CAM_HREF        17  // Referência horizontal (indica inicio/fim da linha)
+// #define CAM_PCLK        18  // Clock do pixel
+// #define CAM_XCLK        8   // Clock externo
+// #define CAM_PWDN        48  // Power down (desliga)
+// #define CAM_RESET       47  // Reset da câmera
+
+// // Pinos de dados da câmera
+// #define CAM_D0 35
+// #define CAM_D1 36
+// #define CAM_D2 37
+// #define CAM_D3 38
+// #define CAM_D4 39
+// #define CAM_D5 40
+// #define CAM_D6 41
+// #define CAM_D7 42
 
