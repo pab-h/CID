@@ -20,8 +20,8 @@ namespace application {
 
         private:
 
-            DcMotor* motorLeft;
-            DcMotor* motorRight;
+            DcMotor*       motorLeft;
+            DcMotor*       motorRight;
             RotaryEncoder* hodometer;
 
             NavigationState state;
@@ -43,7 +43,9 @@ namespace application {
             Navigation();
             ~Navigation();
 
-            RotaryEncoder* getRotaryEncoder();
+            RotaryEncoder*  getRotaryEncoder();
+            NavigationState getState();
+
             void updateAngle(uint pulses);
             void setTravel(Travel* travel);
             void step();

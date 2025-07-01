@@ -35,8 +35,8 @@ Navigation::Navigation() {
     this->motorLeft->disable();
     this->motorRight->disable();
 
-    this->motorLeft->setPower(0xFF);
-    this->motorRight->setPower(0xFF);
+    this->motorLeft->setPower(LEFT_MOTOR_PWM);
+    this->motorRight->setPower(RIGHT_MOTOR_PWM);
 
 
     this->state         = NavigationState::IDLE;
@@ -57,6 +57,10 @@ Navigation::~Navigation() {
 
     delete this->travel;
 
+}
+
+NavigationState Navigation::getState() {
+    return this->state;
 }
 
 RotaryEncoder* Navigation::getRotaryEncoder() {
@@ -170,25 +174,11 @@ void Navigation::stepTurning() {
 
 void Navigation::step() {
 
-    if (this->state == NavigationState::IDLE) {
-
-        this->stepIdle();
-
-        return;
-    }
-
-    if (this->state == NavigationState::MOVING) {
-
-        this->stepMoving();
-
-        return;
-    }
-
-    if (this->state == NavigationState::TURNING) {
-
-        this->stepTurning();
-
-        return;
+    switch (this->state) {
+        case    NavigationState::IDLE    : return this->stepIdle();
+        case    NavigationState::MOVING  : return this->stepMoving();
+        case    NavigationState::TURNING : return this->stepTurning();
+        default                          : return;
     }
 
 }
