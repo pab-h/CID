@@ -1,39 +1,40 @@
+// Bibliotecas utilizadas
 #include <Arduino.h>
 
-#include "drivers/DcMotor.hpp"
-#include "pins.hpp"
+// Importações
+#include "application/ApiService.hpp"
+#include "drivers/wifi.hpp"
 
-// #include "tasks/connection.hpp"  // ou o caminho correto da sua task
-#include "application/Connection.hpp"
+// Declaração de funções
 
-
-void TaskWiFiManager(void* pvParameters);
+void wifiMonitorTask(void* pvParameters);
 void TaskRouteReceiver(void* pvParameters);
 void TaskSensorReader(void* pvParameters);
 void TaskDataSender(void* pvParameters);
 
+// Ainda não sei como chamar isso
 TaskHandle_t sensorReaderHandle;
 TaskHandle_t dataSenderHandle;
 
-
-using namespace drivers;
-
+// using namespace drivers;
+application::ApiService* api = nullptr;
 
 
 void setup() {
-
+    // Iniciando Monitor Serial
     Serial.begin(9600);
+    api = new application::ApiService();
 
 
-    xTaskCreatePinnedToCore(TaskWiFiManager, "WiFi Manager", 4096, NULL, 2, NULL, 0);
-    xTaskCreatePinnedToCore(TaskRouteReceiver, "Receive Travel", 4096, NULL, 1, NULL, 0);
-    xTaskCreatePinnedToCore(TaskSensorReader, "Read Sensors", 4096, NULL, 1, &sensorReaderHandle, 1);
-    xTaskCreatePinnedToCore(TaskDataSender, "Send Sensors", 4096, NULL, 1, &dataSenderHandle, 1);
+
+    // Tasks
+    xTaskCreatePinnedToCore(wifiMonitorTask, "WiFi Manager", 4096, api, 2, NULL, 0);
+    // xTaskCreatePinnedToCore(TaskRouteReceiver, "Receive Travel", 4096, api, 1, NULL, 0);
+    xTaskCreatePinnedToCore(TaskSensorReader, "Read Sensors", 4096, api, 1, &sensorReaderHandle, 1);
+    xTaskCreatePinnedToCore(TaskDataSender, "Send Sensors", 4096, api, 1, &dataSenderHandle, 1);
 
 }
 
-void loop() {
-
-    
+void loop() {  
 
 }

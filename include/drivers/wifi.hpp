@@ -1,17 +1,22 @@
+// Classe Wifi Driver //
 #pragma once
 
-#ifndef WIFI_DRIVER_HPP
-#define WIFI_DRIVER_HPP
-
 #include <WiFi.h>
-// #include <ESP8266WiFi.h> 
 
 class WifiDriver {
-  public:
-    bool connect(const String& ssid, const String& password);
-    void disconnect();
-    bool send(const String& mensagem);
-    String read();
-};
 
-#endif
+  private:
+    String ssid;
+    String password;
+
+  public:
+     WifiDriver(const String& ssid, const String& password); 
+
+     String getSSID();
+     String getPassword();
+
+     bool connect();
+     void disconnect();
+     bool reconnect();
+     bool isConnected();
+};

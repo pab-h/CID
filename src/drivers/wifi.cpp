@@ -1,40 +1,59 @@
-// class WifiDriver:
-//  read() -> bytes
-//  send(string mensagem)
-//  connect(String nome da rede, String password)
-//  disconnect()
+//Responsabilidade: somente lidar com a conexão Wi-Fi. //
+
 #include <Arduino.h>
-#include "drivers/wifi.hpp"
-
 #include <WiFiClient.h>
-// #include <ESP8266WiFi.h> 
-
 #include <WiFi.h>
 
+#include "drivers/wifi.hpp"
 
+String WifiDriver::getSSID() {
+  return this->ssid;
+}
 
-bool WifiDriver::connect(const String& ssid, const String& password) {
+String WifiDriver::getPassword() {
+  return this->password;
+}
+
+WifiDriver::WifiDriver(const String& ssid, const String& password) {
+
+  this->ssid     = ssid;
+  this->password = password;
+
+}
+
+bool WifiDriver::connect() {
+
+    if (this->ssid == "" || this->password == "") {
+      Serial.println("[WiFi]: SSID ou password não configurado! Favor inserir dados na main() ^^");
+      return false;
+    }
+
     WiFi.mode(WIFI_STA);  
 
-    WiFi.begin(ssid.c_str(), password.c_str());
+    WiFi.begin(
+      this->ssid.c_str(), 
+      this->password.c_str()
+    );
     
     int tentativas = 0;
 
-    while (WiFi.status() != WL_CONNECTED && tentativas < 10) {
+    while (!this->isConnected() && tentativas < 10) {
         delay(1000);
-        Serial.println("tentando conectar novamente \n");
         tentativas++;
+        Serial.println("Tentando conexão ... " + String(tentativas) + "/10");
     }
 
-    if (WiFi.status() == WL_CONNECTED) {
-        Serial.println("\nWi-Fi conectado com sucesso!");
-        Serial.print("IP: ");
-        Serial.println(WiFi.localIP());
-        return true;
-    } else {
+    if (!this->isConnected()) {
         Serial.println("\nFalha ao conectar ao Wi-Fi.");
         return false;
     }
+
+    Serial.println("\nWi-Fi conectado com sucesso!");
+    Serial.print("IP: ");
+    Serial.println(WiFi.localIP());
+
+    return true;
+
 }
 
 void WifiDriver::disconnect() {
@@ -42,41 +61,81 @@ void WifiDriver::disconnect() {
   Serial.println("Wi-Fi desconectado.");
 }
 
-bool WifiDriver::send(const String& mensagem) {
-  if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("Wi-Fi não conectado. Impossível enviar.");
-    return false;
-  }
+bool WifiDriver::reconnect(){
+  if (this->isConnected()) return true;
 
-  WiFiClient client;
-  const char* host = "api.exemplo.com";  // 🔁 Trocar pelo domínio real
-  const int port = 80;
-
-  if (!client.connect(host, port)) {
-    Serial.println("Erro ao conectar com o servidor.");
-    return false;
-  }
-
-  // Enviar requisição HTTP (POST)
-  client.println("POST /dados HTTP/1.1");
-  client.print("Host: ");
-  client.println(host);
-  client.println("Content-Type: application/json");
-  client.print("Content-Length: ");
-  client.println(mensagem.length());
-  client.println(); // linha em branco obrigatória
-  client.println(mensagem);
-
-  Serial.println("Mensagem enviada:");
-  Serial.println(mensagem);
-
-  return true;
+  Serial.println("Reconectando Wi-fi ...");
+  this->disconnect();
+  return this->connect();
 }
 
-String WifiDriver::read() {
-  WiFiClient client;
-  if (client.available()) {
-    return client.readString();
-  }
-  return "";
+bool WifiDriver::isConnected(){
+  return WiFi.status() == WL_CONNECTED;
 }
+
+
+
+// // Inicializa os atributos estáticos
+// String WifiDriver::_ssid = "";
+// String WifiDriver::_password = "";
+
+// // Funções da classe WifiDriver:
+// void WifiDriver::begin(const String& ssid, const String& password) {
+//     _ssid = ssid;
+//     _password = password;
+// }
+
+// bool WifiDriver::connect() {
+    
+//     if (_ssid == "" || _password == "") {
+//       Serial.println("[WiFi]: SSID ou password não configurado! Favor inserir dados na main() ^^");
+//       return false;
+//     }
+
+//     WiFi.mode(WIFI_STA);  
+
+//     WiFi.begin(_ssid.c_str(), _password.c_str());
+    
+//     int tentativas = 0;
+
+//     while (WiFi.status() != WL_CONNECTED && tentativas < 10) {
+//         delay(1000);
+//         tentativas++;
+//         Serial.println("Tentando conexão ... " + String(tentativas) + "/10");
+//     }
+
+//     if (WiFi.status() == WL_CONNECTED) {
+//         Serial.println("\nWi-Fi conectado com sucesso!");
+//         Serial.print("IP: ");
+//         Serial.println(WiFi.localIP());
+//         return true;
+//     } else {
+//         Serial.println("\nFalha ao conectar ao Wi-Fi.");
+//         return false;
+//     }
+// }
+
+// void WifiDriver::disconnect() {
+//   WiFi.disconnect();
+//   Serial.println("Wi-Fi desconectado.");
+// }
+
+// bool WifiDriver::isConnected(){
+//   return WifiDriver::isConnected();
+// }
+
+// bool WifiDriver::reconnect(const String& ssid, const String& password){
+//   if (isConnected()) return true;
+
+//   Serial.println("Reconectando Wi-fi ...");
+//   disconnect();
+//   return connect();
+// }
+
+// String WifiDriver::getSSID() {
+//     return _ssid;
+// }
+
+// String WifiDriver::getPassword() {
+//     return _password;
+// }

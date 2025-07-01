@@ -1,37 +1,37 @@
-//logica do que fazer com os dados
-//pegar o texto e processar pra uma nova estrutura e passar pra camada de coisa
-
-//Add o ngç de receber o json e mudar 
-
-//enviar os dados
-
-// #include <ESP8266HTTPClient.h>
-
+//Regras de Negócio
 #include <ArduinoJson.h>
-
 #include <WiFi.h>
 #include <HTTPClient.h>
-
-
 #include <WiFiClient.h>
-// #include <ESP8266WiFi.h> 
 
-#include "entity/Step.hpp"
-#include "entity/Travel.hpp"
 #include "drivers/wifi.hpp"
-#include "application/Connection.hpp"
+#include "application/ApiService.hpp"
 #include "entity/SensorData.hpp"
 
 using namespace entity;
+using namespace application;
+
 extern TaskHandle_t sensorReaderHandle;
 extern TaskHandle_t dataSenderHandle;
 
+ApiService::ApiService() {
 
-bool deserializeSteps(const char* jsonBuffer, Step*& stepsOut, uint& countOut) {
-    // Ajuste o tamanho conforme o tamanho máximo esperado do JSON
-    StaticJsonDocument<2048> doc;
+    this->wifi = new WifiDriver("Oie", "12345678");
+
+    this->wifi->connect();
+
+}
+
+WifiDriver* ApiService::getWifi() {
+    return this->wifi;
+}
+
+bool ApiService::deserializeSteps(const char* jsonBuffer, Step*& stepsOut, uint& countOut) {
+
+    StaticJsonDocument<2048> doc; //Se precisar pode aumentar para receber o JSON
 
     DeserializationError error = deserializeJson(doc, jsonBuffer);
+
     if (error) {
         Serial.print(F("Erro ao desserializar JSON: "));
         Serial.println(error.f_str());
@@ -56,27 +56,20 @@ bool deserializeSteps(const char* jsonBuffer, Step*& stepsOut, uint& countOut) {
     return true;
 }
 
-void testDownloadJson() {
-    WifiDriver wifi;
+void ApiService::testDownloadJson() {
 
-    Serial.println("Iniciando conexão Wi-Fi...");
+    Serial.println("Buscando dados da API ...");
 
-        if (wifi.connect("Oie", "12345678")) {
-            Serial.println("Wi-Fi conectado!");
-        } else{
-            Serial.println("nao deu certo conectar");
-        }
-        
-    if (WiFi.status() == WL_CONNECTED) {
+    if (this->wifi->isConnected()) {
         WiFiClient client;
         HTTPClient http;
-        http.begin(client, "http://run.mocky.io/v3/8b34fd7e-22d9-4f00-a27e-43d5af1b2d24");  // ✅ Forma correta
+        http.begin(client, "http://run.mocky.io/v3/8b34fd7e-22d9-4f00-a27e-43d5af1b2d24");
 
         int httpCode = http.GET();
 
         if (httpCode > 0) {
             String payload = http.getString();
-            Serial.println("Resposta:");
+            Serial.println("Resposta da API:");
             Serial.println(payload);
 
             Step* steps = nullptr;
@@ -100,38 +93,19 @@ void testDownloadJson() {
     } else {
         Serial.println("WiFi não conectado.");
     }
-    Serial.println("cheguei até a converter de json pra algo usavel");
+
+    Serial.println("Dados recebidos da API e convertidos com sucesso!");
+    Serial.println("Chamando a task de enviar os dados para navegação ... ");
     xTaskNotifyGive(sensorReaderHandle);
-    Serial.println("acordei o preguiçoso!");
+    Serial.println("Acordei o preguiçoso!");
 
 }
 
-String gerarJson(SensorData* leituras, uint count) {
-    StaticJsonDocument<512> doc;
-    JsonArray array = doc.to<JsonArray>();
-
-    for (uint i = 0; i < count; i++) {
-        JsonObject obj = array.createNestedObject();
-        obj["temperature"] = leituras[i].temperature;
-        obj["moisture"] = leituras[i].moisture;
-        obj["luminosity"] = leituras[i].luminosity;
-        // obj["motorVelocity"] = leituras[i].motorVelocity;
-        // obj["cameraImagemBase64"] = leituras[i].cameraImagemBase64;
-    }
-
-    String json;
-    Serial.println("BLUA BLA BLA BLUE BLA");
-    serializeJsonPretty(doc, json);
-    xTaskNotifyGive(dataSenderHandle);
-    Serial.println("acordei o segundo preguiçoso!");
-    return json;
-}
-
-void enviarDadosParaApi(SensorData* leituras, uint count) {
+void ApiService::enviarDadosParaApi(SensorData* leituras, uint count) {
     String json = gerarJson(leituras, count);
     Serial.println("JSON a ser enviado:");
     Serial.println(json);
-
+    Serial.println("Simulação que o dado foi enviado corretamente!");
     // Para enviar via POST futuramente:
     /*
     if (WiFi.status() == WL_CONNECTED) {
@@ -148,4 +122,27 @@ void enviarDadosParaApi(SensorData* leituras, uint count) {
         Serial.println("Wi-Fi não conectado.");
     }
     */
+}
+
+String ApiService::gerarJson(SensorData* leituras, uint count) {
+
+    StaticJsonDocument<512> doc;
+
+    JsonArray array = doc.to<JsonArray>();
+
+    for (uint i = 0; i < count; i++) {
+        JsonObject obj = array.createNestedObject();
+        obj["temperature"] = leituras[i].temperature;
+        obj["moisture"] = leituras[i].moisture;
+        obj["luminosity"] = leituras[i].luminosity;
+    }
+
+    String json;
+    serializeJsonPretty(doc, json);
+    Serial.println("Dados dos sensores foram devidamente recebidos e convertidos para JSON!");
+    Serial.println("Chamando a task para enviar esses dados para API ...");
+
+    xTaskNotifyGive(dataSenderHandle);
+    Serial.println("Acordei o segundo preguiçoso!");
+    return json;
 }

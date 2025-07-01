@@ -1,93 +1,95 @@
+// Bibliotecas utilizadas
 #include <Arduino.h>
-#include "drivers/wifi.hpp"
 #include <WiFiClient.h>
-// #include <ESP8266WiFi.h>
-// #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.h>
-// #include "tasks/Tasks.hpp"
-#include "entity/Travel.hpp"
-#include "entity/SensorData.hpp"
-#include "application/Connection.hpp"
-
 #include <WiFi.h>
 #include <HTTPClient.h>
 
+// Importações
+#include "drivers/wifi.hpp"
+#include "entity/Travel.hpp"
+#include "entity/SensorData.hpp"
+#include "application/ApiService.hpp"
 
 using namespace entity;
 
 extern TaskHandle_t sensorReaderHandle;
 extern TaskHandle_t dataSenderHandle;
-// TaskHandle_t sensorReaderHandle = nullptr;
-// TaskHandle_t dataSenderHandle = nullptr;
-SensorData globalSensorData;
 
-void wifiConnectAndSend() {
-  WifiDriver wifi;
+//Usando a entidade global para armazenar os valores lidos nos sensores
+const int numLeituras = 5;
+SensorData sensorArray[numLeituras];
 
-  Serial.println("Iniciando conexão Wi-Fi...");
+// application::ApiService api;
 
-  if (wifi.connect("Oie", "12345678")) {
-    Serial.println("Wi-Fi conectado!");
+//Função para manter a Wifi conectada
+void wifiMonitorTask(void* pvParameters) {
+  Serial.println("entrei na task");
 
-    String payload = "{\"umidade\": 42}";
-    if (wifi.send(payload)) {
-      Serial.println("Dados enviados com sucesso!");
-    } else {
-      Serial.println("Falha ao enviar dados.");
-    }
-  } else {
-    Serial.println("Falha na conexão Wi-Fi.");
-  }
-}
+  application::ApiService* api = static_cast<application::ApiService*> (pvParameters);
+  WifiDriver*             wifi = api->getWifi(); 
 
-void TaskWiFiManager(void* pvParameters) {
-    WifiDriver wifi;
+  vTaskDelay(1);
     while (true) {
-        if (WiFi.status() != WL_CONNECTED) {
-            Serial.println("[WiFi] Conectando...");
-            wifi.connect("Oie", "12345678");
+        if (!wifi->isConnected()) {
+            Serial.println("[WiFiMonitor] Wi-Fi desconectado! Tentando reconectar...");
+            wifi->reconnect();
         }
-        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        vTaskDelay(pdMS_TO_TICKS(5000)); // espera 5 segundos antes de checar de novo
     }
-    vTaskDelete(NULL);
 }
+
 
 void TaskRouteReceiver(void* pvParameters) {
+
+  application::ApiService* api = static_cast<application::ApiService*> (pvParameters);
+  WifiDriver*             wifi = api->getWifi(); 
+
+  vTaskDelay(1);
     // Aguarda conexão
-    while (WiFi.status() != WL_CONNECTED) {
+    while (!wifi->isConnected()) {
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 
     Serial.println("[Route] Baixando rota...");
-    testDownloadJson();  
-
+    api->testDownloadJson();
     vTaskDelete(nullptr); 
-    vTaskDelete(NULL);
 }
 
 
 void TaskSensorReader(void* pvParameters) {
-    
+   application::ApiService* api = static_cast<application::ApiService*> (pvParameters);
+    WifiDriver*             wifi = api->getWifi(); 
+
+
+  vTaskDelay(1);
+
         // ulTaskNotifyTake(pdTRUE, portMAX_DELAY);  // espera ser acionada
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+
         Serial.println("[Sensor] Lendo sensores...");
 
         // Simulando leitura real
-        globalSensorData = SensorData(
-            25.5,      // temperatura
-            65.2,      // umidade
-            300        // luminosidade
-        );
+        sensorArray[0] = SensorData(25.5, 65.2, 300);
+        sensorArray[1] = SensorData(26.0, 64.0, 320);
+        sensorArray[2] = SensorData(24.8, 70.5, 280);
+        sensorArray[3] = SensorData(25.2, 63.3, 310);
+        sensorArray[4] = SensorData(26.1, 66.7, 305);
 
         vTaskDelay(2000 / portTICK_PERIOD_MS);
+        
+
+        String json = api->gerarJson(sensorArray, numLeituras);
         // gerarJson(&globalSensorData, 1);
-        String json = gerarJson(&globalSensorData, 1);
+        // String json = gerarJson(&globalSensorData, 1);
         Serial.println("[Sensor] JSON gerado:");
         Serial.println(json);
     
-    vTaskDelete(NULL);
+        vTaskDelete(NULL);
 }
+
 void TaskDataSender(void* pvParameters) {
+  vTaskDelay(1);
     
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);  // espera leitura terminar
 
