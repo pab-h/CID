@@ -28,7 +28,7 @@ void setup() {
 
 
     // Tasks
-    xTaskCreatePinnedToCore(wifiMonitorTask, "WiFi Manager", 4096, api, 2, NULL, 0);
+    xTaskCreatePinnedToCore(wifiMonitorTask, "WiFi Manager", 8192, api, 2, NULL, 0);
     // xTaskCreatePinnedToCore(TaskRouteReceiver, "Receive Travel", 4096, api, 1, NULL, 0);
     xTaskCreatePinnedToCore(TaskSensorReader, "Read Sensors", 4096, api, 1, &sensorReaderHandle, 1);
     xTaskCreatePinnedToCore(TaskDataSender, "Send Sensors", 4096, api, 1, &dataSenderHandle, 1);

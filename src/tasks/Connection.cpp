@@ -24,8 +24,6 @@ SensorData sensorArray[numLeituras];
 
 //Função para manter a Wifi conectada
 void wifiMonitorTask(void* pvParameters) {
-  Serial.println("entrei na task");
-
   application::ApiService* api = static_cast<application::ApiService*> (pvParameters);
   WifiDriver*             wifi = api->getWifi(); 
 
@@ -62,21 +60,21 @@ void TaskSensorReader(void* pvParameters) {
     WifiDriver*             wifi = api->getWifi(); 
 
 
-  vTaskDelay(1);
+    vTaskDelay(1);
 
         // ulTaskNotifyTake(pdTRUE, portMAX_DELAY);  // espera ser acionada
-        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+        // ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
         Serial.println("[Sensor] Lendo sensores...");
 
         // Simulando leitura real
-        sensorArray[0] = SensorData(25.5, 65.2, 300);
-        sensorArray[1] = SensorData(26.0, 64.0, 320);
-        sensorArray[2] = SensorData(24.8, 70.5, 280);
-        sensorArray[3] = SensorData(25.2, 63.3, 310);
-        sensorArray[4] = SensorData(26.1, 66.7, 305);
+        sensorArray[0] = SensorData(25.5, 65.2, 300, 22.6);
+        sensorArray[1] = SensorData(26.0, 64.0, 320, 24.5);
+        sensorArray[2] = SensorData(24.8, 70.5, 280, 21.2);
+        sensorArray[3] = SensorData(25.2, 63.3, 310, 27.6);
+        sensorArray[4] = SensorData(26.1, 66.7, 305, 22.6);
 
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        // vTaskDelay(2000 / portTICK_PERIOD_MS);
         
 
         String json = api->gerarJson(sensorArray, numLeituras);
@@ -91,7 +89,7 @@ void TaskSensorReader(void* pvParameters) {
 void TaskDataSender(void* pvParameters) {
   vTaskDelay(1);
     
-        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);  // espera leitura terminar
+        // ulTaskNotifyTake(pdTRUE, portMAX_DELAY);  // espera leitura terminar
 
         Serial.println("[API] Dados prontos, convertendo para JSON...");
 

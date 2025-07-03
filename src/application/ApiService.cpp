@@ -142,7 +142,7 @@ String ApiService::gerarJson(SensorData* leituras, uint count) {
     Serial.println("Dados dos sensores foram devidamente recebidos e convertidos para JSON!");
     Serial.println("Chamando a task para enviar esses dados para API ...");
 
-    xTaskNotifyGive(dataSenderHandle);
+    // xTaskNotifyGive(dataSenderHandle); // a chamada para a proxima task
     Serial.println("Acordei o segundo preguiçoso!");
     return json;
 }

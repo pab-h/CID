@@ -10,11 +10,12 @@ namespace entity {
             float temperature;
             float moisture;
             int luminosity;
+            float humidity;
             // int motorVelocity;
             // String cameraImagemBase64;
             
             SensorData(); 
 
-            SensorData(float temperature, float moisture, int luminosity); // Construtor com parâmetros
+            SensorData(float temperature, float moisture, int luminosity, float humidity); // Construtor com parâmetros
     };
 }
