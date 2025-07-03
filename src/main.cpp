@@ -1,20 +1,22 @@
 #include <Arduino.h>
 #include "globals.hpp"
 #include "tasks/Measurement.hpp"
+#include "tasks/SystemStatus.hpp"
 #include "application/Measurement.hpp"
 #include "drivers/Display.hpp"
 
 using namespace application;
 
-Display display;
-
 void setup(){
+
+    initGlobals();
 
     Serial.begin(115200);
     while (!Serial){}
 
-    initGlobals();
-    display.begin();
+    display.showBatteryIcon(73);
+    display.showActivity("Conectando");
+    display.showWiFiSignal(0);
 
     TaskHandle_t loopHandle = xTaskGetCurrentTaskHandle();
 
@@ -23,14 +25,11 @@ void setup(){
     xTaskCreatePinnedToCore(tasks::vMeasureTemperatureHumidityTask, "MeasureTempHum", 2048, NULL, 3, &tasks::xMeasureTempHumTaskHandle, 0);
     xTaskCreatePinnedToCore(tasks::vMeasureSoilMoistureTask, "MeasureSoilMoisture", 2048, NULL, 2, &tasks::xMeasureSoilMoistureTaskHandle, 0);
     xTaskCreatePinnedToCore(tasks::vMeasureLuminosityTask, "MeasureLuminosity", 2048, NULL, 2, &tasks::xMeasureLuminosityTaskHandle, 0);
+    xTaskCreatePinnedToCore(tasks::vSystemStatusTask, "SystemMonitor", 2048, NULL, 1, &tasks::xSystemStatusTaskHandle, 1);
 
 
     Serial.println("Setup concluído, tasks criadas.");
 
-    display.showBatteryIcon(95);
-    display.showSystemStatus("Sensoriando");
-
-    
 }
 
 void loop() {

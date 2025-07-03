@@ -23,6 +23,9 @@
 #define I2C_SCL 11
 #define I2C_SDA 12
 
+/* Pino de nível da bateria */
+#define BATERY_PIN 34 // A DEFINIR
+
 // /* Pinos da câmera*/
 // #define CAM_SDA         15   // Pino de dados I2C
 // #define CAM_SCL         7  // Pino de clock I2C
