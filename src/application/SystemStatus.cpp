@@ -56,6 +56,16 @@ namespace application {
 
     /* General functions */
     
+    //Implementar depois
+    void SystemStatus::updateConnectionFromWiFi(){
+        return;
+    }
+    
+    //Implementar essa função depois
+    void SystemStatus::measureAndUpdateBatteryLevel(uint8_t adcPin){
+        return;
+    }
+    
     std::string SystemStatus::activityToString() const {
 
         switch (currentActivity) {
@@ -71,14 +81,17 @@ namespace application {
 
     }
 
-    //Implementar essa função depois
-    void SystemStatus::measureAndUpdateBatteryLevel(uint8_t adcPin){
-        return;
-    }
+    StatusData SystemStatus::getStatusData() const {
 
-    //Implementar depois
-    void SystemStatus::updateConnectionFromWiFi(){
-        return;
+        StatusData data;
+
+        data.batteryLevel = batteryLevel;
+        data.connectionLevel = connectionLevel;
+        data.currentActivity = currentActivity;
+        data.currentSector = currentSector;
+
+        return data;
+
     }
 
 }

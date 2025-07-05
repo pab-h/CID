@@ -3,7 +3,7 @@
 #include <string>
 
 namespace application {
-
+    
     /**
      * @brief Enumeration of possible activities the CID system can be performing.
      */
@@ -13,6 +13,16 @@ namespace application {
         SENSING,     ///< Performing sensing operations
         CONNECTING,  ///< Attempting to connect to the network
         ERROR        ///< An error has occurred
+    };
+
+    /**
+     * @brief Snapshot structure representing the current system status.
+     */
+    struct StatusData {
+        uint8_t batteryLevel;        ///< Battery level percentage (0–100%)
+        uint8_t connectionLevel;     ///< Wi-Fi signal level (0–4)
+        Activity currentActivity;    ///< Current activity being performed
+        std::string currentSector;   ///< Current or target sector name
     };
 
     /**
@@ -128,8 +138,18 @@ namespace application {
              */
             std::string activityToString() const;
 
-        private:
+            /**
+             * @brief Returns a snapshot of the current system status.
+             * 
+             * This method collects and returns the current system information
+             * as a StatusData struct, which is useful for transmission or logging.
+             * 
+             * @return StatusData A copy of the current system state.
+             */
+            StatusData getStatusData() const;
 
+        private:
+            
             /**
              * @brief Connection quality level.
              * 
