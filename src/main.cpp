@@ -14,10 +14,6 @@ void setup(){
     Serial.begin(115200);
     while (!Serial){}
 
-    display.showBatteryIcon(73);
-    display.showActivity("Conectando");
-    display.showWiFiSignal(0);
-
     TaskHandle_t loopHandle = xTaskGetCurrentTaskHandle();
 
     // Criando as tasks

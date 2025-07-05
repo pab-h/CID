@@ -69,7 +69,7 @@ namespace application{
             SensorData sensorData;       /**< Collected sensor data */
             SensorStatus sensorStatus;   /**< Current sensor status */
 
-            drivers::TempSensor dht;         /**< Temperature and humidity sensor */
+            drivers::TempHumSensor dht;         /**< Temperature and humidity sensor */
             drivers::LuminositySensor ldr;   /**< Luminosity sensor */
             drivers::MoistureSensor soil;    /**< Soil moisture sensor */
 
@@ -93,14 +93,14 @@ namespace application{
              * @param flags Reference to the current error flags to modify.
              * @param error Error flag to add.
              */
-            inline void addError(u_int8_t &flags, MeasurementError error);
+            inline void addError(uint8_t &flags, MeasurementError error);
 
             /**
              * @brief Removes an error flag from the current flags.
              * @param flags Reference to the current error flags to modify.
              * @param error Error flag to remove.
              */
-            inline void removeError(u_int8_t &flags, MeasurementError error);
+            inline void removeError(uint8_t &flags, MeasurementError error);
 
             /**
              * @brief Prints all active error flags in human-readable form.

@@ -20,8 +20,8 @@
 #define TEMP_PIN 5 // Pino digital
 
 /* Pinos I2C*/
-#define I2C_SCL 11
-#define I2C_SDA 12
+#define I2C_SCL 7
+#define I2C_SDA 15
 
 /* Pino de nível da bateria */
 #define BATERY_PIN 34 // A DEFINIR

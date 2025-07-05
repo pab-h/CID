@@ -12,7 +12,7 @@ namespace drivers{
      * This class wraps the DHT library to provide easy access to temperature and humidity
      * readings, as well as initialization and sensor readiness checking.
      */
-    class   TempSensor{
+    class   TempHumSensor{
 
         private:
             
@@ -26,7 +26,7 @@ namespace drivers{
              * 
              * @param pin GPIO pin connected to the DHT data pin (default is TEMP_PIN from pins.hpp)
              */
-            TempSensor(u_int8_t pin = TEMP_PIN);
+            TempHumSensor(uint8_t pin = TEMP_PIN);
 
             /**
              * @brief Initializes the DHT sensor.

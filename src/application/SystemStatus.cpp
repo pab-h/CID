@@ -3,20 +3,38 @@
 
 namespace application {
 
-
     SystemStatus::SystemStatus()
         : currentSector("Base"),
         currentActivity(Activity::IDLE),
-        batteryLevel(100.0f),
+        batteryLevel(100),
         connectionLevel(0) {}
+    
+    /* Conection getters and setters*/
 
-    void SystemStatus::setCurrentSector(const std::string& sector) {
-        currentSector = sector;
+    uint8_t SystemStatus::getConnectionLevel() const {
+        return connectionLevel;
     }
 
-    std::string SystemStatus::getCurrentSector() const {
-        return currentSector;
+    void SystemStatus::setConnectionLevel(uint8_t level) {
+
+        if (level < 0) level = 0;
+        else if (level > 4) level = 4;
+
+        connectionLevel = level;
+
     }
+
+    /* Batery getters and setters */
+
+    uint8_t SystemStatus::getBatteryLevel() const {
+        return batteryLevel;
+    }
+    
+    void SystemStatus::setBatteryLevel(uint8_t level) {
+        batteryLevel = level;
+    }
+
+    /* Activity getters and setters */
 
     void SystemStatus::setActivity(Activity activity) {
         currentActivity = activity;
@@ -26,7 +44,18 @@ namespace application {
         return currentActivity;
     }
 
+    /* Location getters and setters*/
 
+    void SystemStatus::setCurrentSector(const std::string& sector) {
+        currentSector = sector;
+    }
+
+    std::string SystemStatus::getCurrentSector() const {
+        return currentSector;
+    }
+
+    /* General functions */
+    
     std::string SystemStatus::activityToString() const {
 
         switch (currentActivity) {
@@ -42,28 +71,8 @@ namespace application {
 
     }
 
-    void SystemStatus::setBatteryLevel(float level) {
-        batteryLevel = level;
-    }
-
-    float SystemStatus::getBatteryLevel() const {
-        return batteryLevel;
-    }
-
-    void SystemStatus::setConnectionLevel(int level) {
-
-        if (level < 0) level = 0;
-        else if (level > 4) level = 4;
-        connectionLevel = level;
-
-    }
-
-    int SystemStatus::getConnectionLevel() const {
-        return connectionLevel;
-    }
-
     //Implementar essa função depois
-    void SystemStatus::measureAndUpdateBatteryLevel(int adcPin){
+    void SystemStatus::measureAndUpdateBatteryLevel(uint8_t adcPin){
         return;
     }
 

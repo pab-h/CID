@@ -42,28 +42,28 @@ namespace drivers {
         void begin();
 
         /**
-         * @brief Shows the battery percentage as plain text.
-         * @param percentage Battery level (0–100).
+         * @brief Renders a Wi-Fi signal strength icon based on the given level.
+         * @param level Connection quality (0–4).
          */
-        void showBatteryLevel(int percentage);
+        void showWiFiSignal(uint8_t level);
 
         /**
          * @brief Draws a battery icon with fill level based on the battery percentage.
          * @param percentage Battery level (0–100).
          */
-        void showBatteryIcon(int percentage);
+        void showBatteryIcon(uint8_t percentage);
 
         /**
-         * @brief Displays the current system activity (e.g., Moving, Sensing).
-         * @param status Activity description string.
+         * @brief displays the current activity performed by the system
+         * @param activity Activity description string.
          */
-        void showActivity(const std::string& status);
+        void showActivity(const std::string& activity);
 
         /**
-         * @brief Renders a Wi-Fi signal strength icon based on the given level.
-         * @param level Connection quality (0–4).
+         * @brief Displays the current location of cid.
+         * @param  Activity description string.
          */
-        void showWiFiSignal(int level);
+        void showLocation(const std::string& location);
 
         /**
          * @brief Updates the entire screen using the current data from the global SystemStatus instance.
@@ -83,7 +83,18 @@ namespace drivers {
          * @param end_angle End angle in degrees
          * @param color Color of the arc (usually SSD1306_WHITE)
          */
-        void drawArc(int16_t x0, int16_t y0, int16_t r, int16_t start_angle, int16_t end_angle, uint16_t color);
+        void drawArc(uint8_t x0, uint8_t y0, uint8_t r, int16_t start_angle, int16_t end_angle, uint16_t color);
+
+        /**
+         * @brief Draws a monochrome bitmap icon at a specified position.
+         * 
+         * @param x Horizontal position on the display.
+         * @param y Vertical position on the display.
+         * @param bitmap Pointer to a PROGMEM bitmap array.
+         * @param w Width of the bitmap in pixels.
+         * @param h Height of the bitmap in pixels.
+         */
+        void drawIcon(uint8_t x, uint8_t y, const uint8_t* bitmap, uint8_t w, uint8_t h);
     };
 
 }

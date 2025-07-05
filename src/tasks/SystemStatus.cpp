@@ -11,19 +11,17 @@ namespace tasks {
 
     void vSystemStatusTask(void* pvParameters) {
 
-        const int batteryAdcPin = BATERY_PIN;  
-
         while (true) {
 
-            // usar namespace globals?
-            systemStatus.measureAndUpdateBatteryLevel(batteryAdcPin);
+            systemStatus.measureAndUpdateBatteryLevel(BATERY_PIN);
             systemStatus.updateConnectionFromWiFi();
 
             display.updateFromSystemStatus(systemStatus);
 
             //Enviar os dados para o sistema web
 
-            vTaskDelay(pdMS_TO_TICKS(2000));
+            vTaskDelay(pdMS_TO_TICKS(5000));
+    
         }
     }
 

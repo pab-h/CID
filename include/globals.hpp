@@ -11,7 +11,6 @@
 
 #include "freertos/FreeRTOS.h"
 #include <freertos/timers.h>
-#include <Wire.h>
 #include "application/Measurement.hpp"
 #include "application/SystemStatus.hpp"
 #include "drivers/Display.hpp"

@@ -26,7 +26,7 @@ inline void Measurement::removeError(uint8_t &flags, MeasurementError error) {
     flags &= ~Measurement::to_uint8(error);
 }
 
-inline void Measurement::printErrors(u_int8_t flags) {
+inline void Measurement::printErrors(uint8_t flags) {
 
     Serial.println("Errors:");
 
@@ -67,7 +67,6 @@ void Measurement::resetStates() {
     sensorStatus.error = to_uint8(MeasurementError::NONE); 
 
 }
-
 
 bool Measurement::isAllReady() const {
 
@@ -145,7 +144,7 @@ void Measurement::measureLuminosity() {
 
         sensorData.luminosity = percentage;
         sensorStatus.luminosityReady = true;
-        // Serial.printf("Valor da temperatura: %d", percentage);
+
     }
 
     sensorStatus.isSensing = false;
