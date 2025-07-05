@@ -75,15 +75,20 @@ namespace drivers {
         Adafruit_SSD1306 display;  ///< Internal SSD1306 display object.
 
         /**
-         * @brief Helper function to draw an arc from start_angle to end_angle.
-         * @param x0 Center X
-         * @param y0 Center Y
-         * @param r Radius
-         * @param start_angle Start angle in degrees
-         * @param end_angle End angle in degrees
-         * @param color Color of the arc (usually SSD1306_WHITE)
+         * @brief Draws a filled arc between two radius and angle ranges.
+         * 
+         * This function renders a thick arc by drawing pixels from radius rStart to rEnd,
+         * covering the angle range from start_angle to end_angle.
+         *
+         * @param x0 Center X coordinate of the arc.
+         * @param y0 Center Y coordinate of the arc.
+         * @param rStart Inner radius where the arc begins.
+         * @param rEnd Outer radius where the arc ends.
+         * @param start_angle Starting angle in degrees (e.g., 0 to 360).
+         * @param end_angle Ending angle in degrees.
+         * @param color Color of the arc (usually SSD1306_WHITE).
          */
-        void drawArc(uint8_t x0, uint8_t y0, uint8_t r, int16_t start_angle, int16_t end_angle, uint16_t color);
+        void drawArc(uint8_t x0, uint8_t y0, uint8_t rStart, uint8_t rEnd, int16_t start_angle, int16_t end_angle, uint16_t color);
 
         /**
          * @brief Draws a monochrome bitmap icon at a specified position.
@@ -95,6 +100,8 @@ namespace drivers {
          * @param h Height of the bitmap in pixels.
          */
         void drawIcon(uint8_t x, uint8_t y, const uint8_t* bitmap, uint8_t w, uint8_t h);
+
+        void drawRadius(uint8_t x, uint8_t y, uint8_t rInit, uint8_t rEnd, int16_t start_angle, int16_t end_angle, uint16_t color);
     };
 
 }
