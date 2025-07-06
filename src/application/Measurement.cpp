@@ -10,11 +10,11 @@ Measurement::Measurement(){
 
 }
 
-inline uint8_t Measurement::to_uint8(MeasurementError err) {
+inline uint8_t Measurement::to_uint8(MeasurementError err) const{
     return static_cast<uint8_t>(err);
 }
 
-inline bool Measurement::hasError(uint8_t flags, MeasurementError error) {
+inline bool Measurement::hasError(uint8_t flags, MeasurementError error) const {
     return (flags & Measurement::to_uint8(error)) != 0;
 }
 
@@ -70,10 +70,12 @@ void Measurement::resetStates() {
 
 bool Measurement::isAllReady() const {
 
-    return sensorStatus.temperatureReady &&
-           sensorStatus.humidityReady &&
-           sensorStatus.moistureReady &&
-           sensorStatus.luminosityReady; 
+    bool tempOk = sensorStatus.temperatureReady || hasError(sensorStatus.error, MeasurementError::TEMPERATURE_FAIL);
+    bool humOk = sensorStatus.humidityReady || hasError(sensorStatus.error, MeasurementError::HUMIDITY_FAIL);
+    bool moistOk = sensorStatus.moistureReady || hasError(sensorStatus.error, MeasurementError::MOISTURE_FAIL);
+    bool lumiOk = sensorStatus.luminosityReady || hasError(sensorStatus.error, MeasurementError::LUMINOSITY_FAIL);
+
+    return tempOk && humOk && moistOk && lumiOk;
 
 }
 

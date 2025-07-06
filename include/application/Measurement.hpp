@@ -86,7 +86,7 @@ namespace application{
              * @param err The MeasurementError to convert.
              * @return The uint8_t bitmask of the error.
              */
-            inline uint8_t to_uint8(MeasurementError err);
+            inline uint8_t to_uint8(MeasurementError err) const;
 
             /**
              * @brief Checks if a specific error flag is set.
@@ -94,7 +94,7 @@ namespace application{
              * @param error Error flag to check.
              * @return True if the error flag is present, false otherwise.
              */
-            inline bool hasError(uint8_t flags, MeasurementError error);
+            inline bool hasError(uint8_t flags, MeasurementError error) const;
 
             /**
              * @brief Adds an error flag to the current flags.
