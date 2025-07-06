@@ -1,15 +1,5 @@
 #pragma once
 
-// /* Pinos da ponte-H */
-
-// #define ENA_PIN 0x77
-// #define ENB_PIN 0x77
-
-// #define IN1_PIN 0x77
-// #define IN2_PIN 0x77
-// #define IN3_PIN 0x77
-// #define IN4_PIN 0x77
-
 /* Pinos do sensor de umidade*/
 #define SOIL_MOISTURE_PIN 4 //pino analógico
 
@@ -46,3 +36,24 @@
 // #define CAM_D6 41
 // #define CAM_D7 42
 
+
+/* H-Bridge pins */
+
+// #define ENA_PIN 0x77
+// #define ENB_PIN 0x77
+
+// #define IN1_PIN 0x77
+// #define IN2_PIN 0x77
+// #define IN3_PIN 0x77
+// #define IN4_PIN 0x77
+
+#define IN1_PIN 0x77 //apague
+#define IN2_PIN 0x77
+#define IN3_PIN 0x77
+#define IN4_PIN 0x77
+
+
+/* Rotary Encoder pins */
+
+#define SIGA_PIN 0x77
+#define SIGB_PIN 0x77

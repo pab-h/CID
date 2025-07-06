@@ -20,3 +20,6 @@
 #define SCREEN_HEIGHT 64    //< Display y max dimension
 #define OLED_RESET    -1    //< Display no reset pin
 #define SCREEN_ADDRESS 0x3C //< Display I2C adress
+
+/*Navegation configurations*/
+#define PULSES_PER_DEGREE 5.0

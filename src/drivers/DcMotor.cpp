@@ -3,9 +3,9 @@
 
 using namespace drivers;
 
-DcMotor::DcMotor(u_int8_t en, u_int8_t inl, u_int8_t inr) {
+DcMotor::DcMotor(uint8_t en, uint8_t inl, uint8_t inr) {
 
-    this->power = 0;
+    this->power = 0x00;
 
     this->en  = en;
     this->inl = inl;
@@ -19,32 +19,33 @@ DcMotor::DcMotor(u_int8_t en, u_int8_t inl, u_int8_t inr) {
 
 void DcMotor::clockwise() {
 
-    analogWrite(this->inl, this->power);
-    analogWrite(this->inr, 0x00);
+    digitalWrite(this->inl, HIGH);
+    digitalWrite(this->inr, LOW);
 
 }
 
 void DcMotor::counterclockwise() {
 
-    analogWrite(this->inl, 0x00);
-    analogWrite(this->inr, this->power);
+    digitalWrite(this->inl, LOW);
+    digitalWrite(this->inr, HIGH);
 
 }
 
-void DcMotor::setPower(u_int8_t pwm) {
+void DcMotor::setPower(uint8_t pwm) {
 
-    this->power = power;
+    this->power = pwm;
 
 }
 
 void DcMotor::disable() {
 
-    digitalWrite(this->en, LOW);
+    analogWrite(this->en, 0x00);
 
 }
 
 void DcMotor::enable() {
 
-    digitalWrite(this->en, HIGH);
+    analogWrite(this->en, this->power);
 
 }
+

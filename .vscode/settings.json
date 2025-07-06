@@ -1,4 +1,5 @@
 {
+
     "github.copilot.enable": {
         "*": true,
         "plaintext": false,
@@ -53,5 +54,8 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp"
-    }
+    },
+
+    "C_Cpp.errorSquiggles": "disabled"
+
 }
