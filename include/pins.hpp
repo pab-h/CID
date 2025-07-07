@@ -2,16 +2,16 @@
 
 /* H-Bridge pins */
 
-#define ENA_PIN 0x77
-#define ENB_PIN 0x77
+#define ENA_PIN 4
+#define ENB_PIN 2
 
-#define IN1_PIN 0x77
-#define IN2_PIN 0x77
-#define IN3_PIN 0x77
-#define IN4_PIN 0x77
+#define IN1_PIN 25
+#define IN2_PIN 26
+#define IN3_PIN 27
+#define IN4_PIN 14
 
 
 /* Rotary Encoder pins */
 
-#define SIGA_PIN 0x77
-#define SIGB_PIN 0x77
+#define SIGA_PIN 23
+#define SIGB_PIN 22

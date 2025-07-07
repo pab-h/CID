@@ -1,19 +1,25 @@
 #include <Arduino.h>
+
 #include "drivers/DcMotor.hpp"
+#include "board.hpp"
 
 using namespace drivers;
 
-DcMotor::DcMotor(uint8_t en, uint8_t inl, uint8_t inr) {
+DcMotor::DcMotor(uint8_t en, uint8_t inl, uint8_t inr, uint8_t pwmChannel) {
 
-    this->power = 0x00;
+    this->en         = en;
+    this->inl        = inl;
+    this->inr        = inr;
+    this->pwmChannel = pwmChannel;
 
-    this->en  = en;
-    this->inl = inl;
-    this->inr = inr;
-
-    pinMode(this->en , OUTPUT);
     pinMode(this->inl, OUTPUT);
     pinMode(this->inr, OUTPUT);
+
+    ledcSetup(this->pwmChannel, PWM_FREQUENCY, PWM_RESOLUTION);
+    ledcAttachPin(this->en, this->pwmChannel);
+
+    this->disable();
+    this->clockwise();
 
 }
 
@@ -31,21 +37,21 @@ void DcMotor::counterclockwise() {
 
 }
 
-void DcMotor::setPower(uint8_t pwm) {
+void DcMotor::enable() {
 
-    this->power = pwm;
+    ledcWrite(this->pwmChannel, this->power);
 
 }
 
 void DcMotor::disable() {
 
-    analogWrite(this->en, 0x00);
+    ledcWrite(this->pwmChannel, 0x0000);
 
 }
 
-void DcMotor::enable() {
+void DcMotor::setPower(uint8_t pwm) {
 
-    analogWrite(this->en, this->power);
+    this->power = pwm;
 
 }
 

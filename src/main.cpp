@@ -1,43 +1,53 @@
 #include <Arduino.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
-#include "drivers/DcMotor.hpp"
-#include "pins.hpp"
+#include "application/Navigation.hpp"
+#include "tasks/navigation.hpp"
 
-using namespace drivers;
+#include "entity/Travel.hpp"
+#include "entity/Step.hpp"
 
-DcMotor motorA(
-    ENA_PIN,
-    IN1_PIN,
-    IN2_PIN
-);
-
-DcMotor motorB(
-    ENB_PIN,
-    IN3_PIN,
-    IN4_PIN
-);
+using namespace application ;
+using namespace tasks       ;
+using namespace entity      ;
 
 void setup() {
 
     Serial.begin(9600);
 
-    motorA.setPower(0xFF);
-    motorB.setPower(0xFF);
+    Step* steps = new Step[3];
+    
+    steps[0] = Step(10,  0, false);
+    steps[1] = Step( 1, 90, false);
+    steps[2] = Step(10,  0, false);
 
-    motorA.enable();
-    motorB.enable();
+    Travel* travel = new Travel(steps, 3);
+
+    Navigation* nav = new Navigation();
+
+    nav->setTravel(travel);
+
+    xTaskCreatePinnedToCore(
+        vNavigationTask         ,
+        "Navigation"            ,
+        2048                    ,
+        static_cast<void*>(nav) ,
+        1                       ,
+        nullptr                 ,
+        1
+    );
+    
+    xTaskCreatePinnedToCore(
+        vUpdateRotaryEncoderTask ,
+        "UpdateRotaryEncoder"    ,
+        2048                     ,
+        static_cast<void*>(nav)  ,
+        1                        ,
+        nullptr                  ,
+        1
+    );
 
 }
 
-void loop() {
-
-    motorA.clockwise();
-    delay(500);
-
-    motorB.clockwise();
-    delay(500);
-
-    motorA.counterclockwise();
-    delay(500);
-
-}
+void loop() {}

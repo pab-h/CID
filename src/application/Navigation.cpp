@@ -1,5 +1,6 @@
 #include "pins.hpp"
 #include "env.hpp"
+#include "board.hpp"
 
 #include "application/Navigation.hpp"
 
@@ -16,12 +17,14 @@ Navigation::Navigation() {
     this->motorLeft  = new DcMotor(
         ENA_PIN,
         IN1_PIN,
-        IN2_PIN
+        IN2_PIN,
+        PWM_CHANNEL_0
     );
     this->motorRight = new DcMotor(
         ENB_PIN,
         IN3_PIN,
-        IN4_PIN   
+        IN4_PIN,
+        PWM_CHANNEL_1
     );
 
     this->hodometer = new RotaryEncoder(
@@ -32,13 +35,16 @@ Navigation::Navigation() {
     this->motorLeft->disable();
     this->motorRight->disable();
 
-    this->motorLeft->setPower(0xFF);
-    this->motorRight->setPower(0xFF);
+    this->motorLeft->setPower(LEFT_MOTOR_PWM);
+    this->motorRight->setPower(RIGHT_MOTOR_PWM);
 
 
-    this->angle  = 0;
-    this->state  = NavigationState::IDLE;
-    this->travel = nullptr;
+    this->state         = NavigationState::IDLE;
+    this->angle         = 0;
+    this->travel        = nullptr;
+    this->startAngle    = 0;
+    this->startPosition = 0;
+    this->currentStep   = nullptr;
 
 }
 
@@ -51,6 +57,10 @@ Navigation::~Navigation() {
 
     delete this->travel;
 
+}
+
+NavigationState Navigation::getState() {
+    return this->state;
 }
 
 RotaryEncoder* Navigation::getRotaryEncoder() {
@@ -164,25 +174,11 @@ void Navigation::stepTurning() {
 
 void Navigation::step() {
 
-    if (this->state == NavigationState::IDLE) {
-
-        this->stepIdle();
-
-        return;
-    }
-
-    if (this->state == NavigationState::MOVING) {
-
-        this->stepMoving();
-
-        return;
-    }
-
-    if (this->state == NavigationState::TURNING) {
-
-        this->stepTurning();
-
-        return;
+    switch (this->state) {
+        case    NavigationState::IDLE    : return this->stepIdle();
+        case    NavigationState::MOVING  : return this->stepMoving();
+        case    NavigationState::TURNING : return this->stepTurning();
+        default                          : return;
     }
 
 }
