@@ -12,7 +12,6 @@ void setup(){
 
     TaskHandle_t loopHandle = xTaskGetCurrentTaskHandle();
 
-    // Criando as tasks
     xTaskCreatePinnedToCore(tasks::vSensorManagerTask, "SensorManager", 4096, loopHandle, 2, &tasks::xSensorManagerTaskHandle, 0);
     xTaskCreatePinnedToCore(tasks::vMeasureTemperatureHumidityTask, "MeasureTempHum", 2048, NULL, 3, &tasks::xMeasureTempHumTaskHandle, 0);
     xTaskCreatePinnedToCore(tasks::vMeasureSoilMoistureTask, "MeasureSoilMoisture", 2048, NULL, 2, &tasks::xMeasureSoilMoistureTaskHandle, 0);

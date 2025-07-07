@@ -1,5 +1,4 @@
 #include <freertos/FreeRTOS.h>
-
 #include "application/Navigation.hpp"
 #include "tasks/navigation.hpp"
 

@@ -6,6 +6,7 @@
         "scminput": false
     },
     "files.associations": {
+        "new": "cpp",
         "cstring": "cpp",
         "array": "cpp",
         "deque": "cpp",
@@ -15,9 +16,5 @@
         "vector": "cpp",
         "string_view": "cpp",
         "initializer_list": "cpp"
-    }
-}{
-    "files.associations": {
-        "random": "cpp"
     }
 }

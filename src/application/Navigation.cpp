@@ -143,16 +143,16 @@ void Navigation::stepIdle() {
 
 void Navigation::stepMoving() {
 
-    int distance = this->hodometer->getPosition() - this->startPosition;
+    // int distance = this->hodometer->getPosition() - this->startPosition;
 
-    if (distance >= this->currentStep->howLong) {
+    // if (distance >= this->currentStep->howLong) {
 
-        this->motorLeft->disable();
-        this->motorRight->disable();
+    //     this->motorLeft->disable();
+    //     this->motorRight->disable();
 
-        this->state = NavigationState::IDLE;
+    //     this->state = NavigationState::IDLE;
 
-    }
+    // }
 
 }
 
