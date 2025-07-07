@@ -1,53 +1,42 @@
 #include <Arduino.h>
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
+#include "globals.hpp"
+#include "tasks/Measurement.hpp"
+#include "application/Measurement.hpp"
 
-#include "application/Navigation.hpp"
-#include "tasks/navigation.hpp"
+using namespace application;
 
-#include "entity/Travel.hpp"
-#include "entity/Step.hpp"
-
-using namespace application ;
-using namespace tasks       ;
-using namespace entity      ;
-
-void setup() {
+void setup(){
 
     Serial.begin(9600);
+    while (!Serial){}
 
-    Step* steps = new Step[3];
+    TaskHandle_t loopHandle = xTaskGetCurrentTaskHandle();
+
+    // Criando as tasks
+    xTaskCreatePinnedToCore(tasks::vSensorManagerTask, "SensorManager", 4096, loopHandle, 2, &tasks::xSensorManagerTaskHandle, 0);
+    xTaskCreatePinnedToCore(tasks::vMeasureTemperatureHumidityTask, "MeasureTempHum", 2048, NULL, 3, &tasks::xMeasureTempHumTaskHandle, 0);
+    xTaskCreatePinnedToCore(tasks::vMeasureSoilMoistureTask, "MeasureSoilMoisture", 2048, NULL, 2, &tasks::xMeasureSoilMoistureTaskHandle, 0);
+    xTaskCreatePinnedToCore(tasks::vMeasureLuminosityTask, "MeasureLuminosity", 2048, NULL, 2, &tasks::xMeasureLuminosityTaskHandle, 0);
+
+
+    Serial.println("Setup concluído, tasks criadas.");
     
-    steps[0] = Step(10,  0, false);
-    steps[1] = Step( 1, 90, false);
-    steps[2] = Step(10,  0, false);
-
-    Travel* travel = new Travel(steps, 3);
-
-    Navigation* nav = new Navigation();
-
-    nav->setTravel(travel);
-
-    xTaskCreatePinnedToCore(
-        vNavigationTask         ,
-        "Navigation"            ,
-        2048                    ,
-        static_cast<void*>(nav) ,
-        1                       ,
-        nullptr                 ,
-        1
-    );
-    
-    xTaskCreatePinnedToCore(
-        vUpdateRotaryEncoderTask ,
-        "UpdateRotaryEncoder"    ,
-        2048                     ,
-        static_cast<void*>(nav)  ,
-        1                        ,
-        nullptr                  ,
-        1
-    );
-
 }
 
-void loop() {}
+void loop() {
+
+    xTaskNotifyGive(tasks::xSensorManagerTaskHandle);
+    ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(3000));
+
+    MeasurementResponse resp = measurement.getMeasures();
+
+    Serial.printf("Temperatura: %.2f C\n", resp.data.temperature);
+    Serial.printf("Umidade: %.2f %%\n", resp.data.humidity);
+    Serial.printf("Umidade do solo: %d %%\n", resp.data.soilMoisture);
+    Serial.printf("Luminosidade: %d %%\n", resp.data.luminosity);
+    
+    Serial.println("-----------------------");
+
+    vTaskDelay(pdMS_TO_TICKS(2000));
+
+}
