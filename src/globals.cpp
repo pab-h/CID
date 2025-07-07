@@ -1,4 +1,13 @@
 #include "globals.hpp"
+#include "pins.hpp"
 
-// Instancia global da classe de medição
 application::Measurement measurement;
+application::SystemStatus systemStatus;
+drivers::Display display;
+
+void initGlobals() {
+
+    Wire.begin(I2C_SDA, I2C_SCL);
+    display.begin();
+
+}

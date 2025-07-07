@@ -4,7 +4,7 @@
 
 using namespace drivers;
 
-LuminositySensor::LuminositySensor(u_int8_t pin){
+LuminositySensor::LuminositySensor(uint8_t pin){
 
     this->pin = pin;
     
@@ -30,7 +30,7 @@ uint8_t LuminositySensor::readPercentage(){
 }
 
 //Gostaria de guardar esses valores na memória flash do esp32
-void LuminositySensor::calibrate(u_int16_t minValue, u_int16_t maxValue){
+void LuminositySensor::calibrate(uint16_t minValue, uint16_t maxValue){
 
     this->minValue = minValue;
     this->maxValue = maxValue;

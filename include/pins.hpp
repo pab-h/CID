@@ -20,3 +20,10 @@
 #define SOIL_MOISTURE_PIN 6 // Analog pin
 #define LDR_PIN  8          // Analog pin
 #define TEMP_PIN 16         // Digital pin
+
+/* I2C Pins */
+#define I2C_SCL 7
+#define I2C_SDA 15
+
+/* BATTERY PIN */
+#define BATTERY_PIN 34 // A DEFINIR

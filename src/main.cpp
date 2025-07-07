@@ -1,13 +1,17 @@
 #include <Arduino.h>
 #include "globals.hpp"
 #include "tasks/Measurement.hpp"
+#include "tasks/SystemStatus.hpp"
 #include "application/Measurement.hpp"
+#include "drivers/Display.hpp"
 
 using namespace application;
 
 void setup(){
 
-    Serial.begin(9600);
+    initGlobals();
+
+    Serial.begin(115200);
     while (!Serial){}
 
     TaskHandle_t loopHandle = xTaskGetCurrentTaskHandle();
@@ -16,10 +20,11 @@ void setup(){
     xTaskCreatePinnedToCore(tasks::vMeasureTemperatureHumidityTask, "MeasureTempHum", 2048, NULL, 3, &tasks::xMeasureTempHumTaskHandle, 0);
     xTaskCreatePinnedToCore(tasks::vMeasureSoilMoistureTask, "MeasureSoilMoisture", 2048, NULL, 2, &tasks::xMeasureSoilMoistureTaskHandle, 0);
     xTaskCreatePinnedToCore(tasks::vMeasureLuminosityTask, "MeasureLuminosity", 2048, NULL, 2, &tasks::xMeasureLuminosityTaskHandle, 0);
+    xTaskCreatePinnedToCore(tasks::vSystemStatusTask, "SystemMonitor", 2048, NULL, 1, &tasks::xSystemStatusTaskHandle, 1);
 
 
     Serial.println("Setup concluído, tasks criadas.");
-    
+
 }
 
 void loop() {

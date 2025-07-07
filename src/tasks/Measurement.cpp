@@ -7,11 +7,11 @@
 namespace tasks {
 
     /* Inicialização padrão dos Handles */
+    TaskHandle_t xSensorManagerTaskHandle = nullptr;
     TaskHandle_t xMeasureTempHumTaskHandle = nullptr;
     TaskHandle_t xMeasureSoilMoistureTaskHandle = nullptr;
     TaskHandle_t xMeasureLuminosityTaskHandle = nullptr;
     //TaskHandle_t xTakePictureTaskHandle = nullptr;
-    TaskHandle_t xSensorManagerTaskHandle = nullptr;
 
     void vSensorManagerTask(void* pvParameters) {
 

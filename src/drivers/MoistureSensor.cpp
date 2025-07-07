@@ -24,7 +24,7 @@ uint16_t MoistureSensor::read(){
 
 uint8_t MoistureSensor::readPercentage(){
 
-    int percentage = map(this->read(), this->minValue, this->maxValue, 0, 100);
+    int percentage = map(this->read(), this->minValue, this->maxValue, 100, 0);
     percentage = constrain(percentage, 0, 100);
 
     return percentage;
