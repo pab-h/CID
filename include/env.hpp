@@ -19,7 +19,7 @@
 #define LUMINOSITY_MIN_VALUE 0
 
 /*Display configurations*/
-#define SCREEN_WIDTH 128    //< Display x max dimension
-#define SCREEN_HEIGHT 64    //< Display y max dimension
-#define OLED_RESET    -1    //< Display no reset pin
+#define SCREEN_WIDTH   128    //< Display x max dimension
+#define SCREEN_HEIGHT  64    //< Display y max dimension
+#define OLED_RESET     -1    //< Display no reset pin
 #define SCREEN_ADDRESS 0x3C //< Display I2C adress
