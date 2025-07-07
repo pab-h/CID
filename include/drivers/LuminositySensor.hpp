@@ -28,7 +28,7 @@ namespace drivers{
              * 
              * @param pin Analog pin number where the sensor is connected.
              */
-            LuminositySensor(u_int8_t pin = LDR_PIN);
+            LuminositySensor(uint8_t pin = LDR_PIN);
 
             /**
              * @brief Read raw analogic value from the sensor.
