@@ -5,6 +5,19 @@
 using namespace application;
 using namespace drivers;
 
+void tasks::vNavigationNotificationsTask(void* pvParameters) {
+
+    Navigation*   navigation    = static_cast<Navigation*>(pvParameters);
+    Notifications notifications = navigation->getNotifications();
+
+    if (navigation->getState() == State::WAITING_MEASURE && !notifications.isMeasureSend) {
+        // envio auqi
+    }
+
+    vTaskDelay(pdMS_TO_TICKS(50));
+
+}
+
 void tasks::vUpdateRotaryEncoderTask(void* pvParameters) {
     
     Navigation*    navigation = static_cast<Navigation*>(pvParameters);
