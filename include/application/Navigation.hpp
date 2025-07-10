@@ -11,9 +11,10 @@ using namespace entity;
 namespace application {
     
     enum class NavigationState {
-        IDLE   ,
-        MOVING ,
-        TURNING
+        IDLE             ,
+        MOVING           ,
+        TURNING          ,
+        WAITING_MEASURES
     };
 
     class Navigation {
@@ -34,6 +35,7 @@ namespace application {
             void stepIdle();
             void stepMoving();
             void stepTurning();
+            void stepWaiting();
 
             void setupRotateMotors();
             void setupForwardMotors();

@@ -145,15 +145,20 @@ void Navigation::stepMoving() {
 
     int distance = this->hodometer->getPosition() - this->startPosition;
 
-    if (distance >= this->currentStep->distance) {
-
-        this->motorLeft->disable();
-        this->motorRight->disable();
-
-        this->state = NavigationState::IDLE;
-
+    if (distance <= this->currentStep->distance) {
+        return;
     }
 
+    this->motorLeft->disable();
+    this->motorRight->disable();
+
+    if (this->currentStep->toMeasure) {
+        this->state = NavigationState::WAITING_MEASURES;
+        return;
+    }
+
+    this->state = NavigationState::IDLE;
+    
 }
 
 void Navigation::stepTurning() {
@@ -171,14 +176,17 @@ void Navigation::stepTurning() {
 
 }
 
+void Navigation::stepWaiting() {};
+
 
 void Navigation::step() {
 
     switch (this->state) {
-        case    NavigationState::IDLE    : return this->stepIdle();
-        case    NavigationState::MOVING  : return this->stepMoving();
-        case    NavigationState::TURNING : return this->stepTurning();
-        default                          : return;
+        case    NavigationState::IDLE             : return this->stepIdle();
+        case    NavigationState::MOVING           : return this->stepMoving();
+        case    NavigationState::TURNING          : return this->stepTurning();
+        case    NavigationState::WAITING_MEASURES : return this->stepWaiting();
+        default                                   : return;
     }
 
 }
