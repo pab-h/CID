@@ -60,7 +60,7 @@ namespace application{
     struct MeasurementResponse{
     
         SensorData data;                                                /**< Sensor measurement data */
-         uint8_t error = static_cast<uint8_t>(MeasurementError::NONE);  /**< Detected errors */
+        uint8_t error = static_cast<uint8_t>(MeasurementError::NONE);  /**< Detected errors */
 
     };
 

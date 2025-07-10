@@ -6,7 +6,8 @@
 
 #include "drivers/wifi.hpp"
 #include "application/ApiService.hpp"
-#include "entity/SensorData.hpp"
+//#include "entity/SensorData.hpp"
+#include "application/Measurement.hpp"
 
 using namespace entity;
 using namespace application;
@@ -101,7 +102,7 @@ void ApiService::testDownloadJson() {
 
 }
 
-void ApiService::enviarDadosParaApi(SensorData* leituras, uint count) {
+void ApiService::enviarDadosParaApi(SensorData leituras, uint count) {
     String json = gerarJson(leituras, count);
     Serial.println("JSON a ser enviado:");
     Serial.println(json);
@@ -124,18 +125,19 @@ void ApiService::enviarDadosParaApi(SensorData* leituras, uint count) {
     */
 }
 
-String ApiService::gerarJson(SensorData* leituras, uint count) {
+String ApiService::gerarJson(SensorData leituras, uint count) {
 
     StaticJsonDocument<512> doc;
 
     JsonArray array = doc.to<JsonArray>();
 
-    for (uint i = 0; i < count; i++) {
-        JsonObject obj = array.createNestedObject();
-        obj["temperature"] = leituras[i].temperature;
-        obj["moisture"] = leituras[i].moisture;
-        obj["luminosity"] = leituras[i].luminosity;
-    }
+
+    JsonObject obj = array.createNestedObject();
+
+    obj["temperature"] = leituras.temperature;
+    obj["humidity"] = leituras.humidity;
+    obj["moisture"] = leituras.soilMoisture;
+    obj["luminosity"] = leituras.luminosity;
 
     String json;
     serializeJsonPretty(doc, json);

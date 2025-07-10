@@ -1,7 +1,8 @@
 #pragma once
 
 #include "entity/Step.hpp"  
-#include "entity/SensorData.hpp"  
+#include "application/Measurement.hpp" 
+//#include "entity/SensorData.hpp" 
 
 #include "drivers/wifi.hpp"
 
@@ -20,8 +21,8 @@ namespace application {
             bool deserializeSteps(const char* jsonBuffer, Step*& stepsOut, uint& countOut);
             
             void testDownloadJson();
-            void enviarDadosParaApi(SensorData* leituras, uint count);
-            String gerarJson(SensorData* leituras, uint count);
+            void enviarDadosParaApi(SensorData leituras, uint count);
+            String gerarJson(SensorData leituras, uint count);
 
             WifiDriver* getWifi();
 

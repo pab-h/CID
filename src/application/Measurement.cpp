@@ -196,7 +196,9 @@ MeasurementResponse Measurement::getMeasures() {
         Serial.printf("Measurement %s", "Tentativa de enviar medidas enquanto nem todas as medidas foram coletadas. \n");
 
     } else {
+
         removeError(sensorStatus.error, MeasurementError::INCOMPLETE);
+        
     }
 
     if (sensorStatus.error != 0) {
