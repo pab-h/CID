@@ -17,15 +17,18 @@ LuminositySensor::LuminositySensor(uint8_t pin){
 
 uint16_t LuminositySensor::read(){
 
-    return analogRead(this->pin);
+    // return analogRead(this->pin);
+    return 500;
 
 }
 
 uint8_t LuminositySensor::readPercentage(){
 
-    uint8_t percentage = map(this->read(), this->minValue, this->maxValue, 0, 100);
+    // uint8_t percentage = map(this->read(), this->minValue, this->maxValue, 0, 100);
     
-    return constrain(percentage, 0, 100);
+    // return constrain(percentage, 0, 100);
+
+    return 75; 
 
 }
 

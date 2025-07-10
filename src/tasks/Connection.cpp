@@ -10,8 +10,10 @@
 #include "entity/Travel.hpp"
 #include "entity/SensorData.hpp"
 #include "application/ApiService.hpp"
+#include "application/SensorManager.hpp" 
 
 using namespace entity;
+using namespace application; 
 
 extern TaskHandle_t sensorReaderHandle;
 extern TaskHandle_t dataSenderHandle;
@@ -56,31 +58,35 @@ void TaskRouteReceiver(void* pvParameters) {
 
 
 void TaskSensorReader(void* pvParameters) {
-   application::ApiService* api = static_cast<application::ApiService*> (pvParameters);
-    WifiDriver*             wifi = api->getWifi(); 
+  application::ApiService* api = static_cast<application::ApiService*> (pvParameters);
+  WifiDriver*             wifi = api->getWifi(); 
 
+  SensorManager sensorManager;
 
     vTaskDelay(1);
 
         // ulTaskNotifyTake(pdTRUE, portMAX_DELAY);  // espera ser acionada
         // ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
-        Serial.println("[Sensor] Lendo sensores...");
+      Serial.println("[TaskSensorReader] Dispositivo parou! Iniciando leitura e envio único...");
 
+      entity::SensorData currentSensorData = sensorManager.readSensorData();
         // Simulando leitura real
-        sensorArray[0] = SensorData(25.5, 65.2, 300, 22.6);
-        sensorArray[1] = SensorData(26.0, 64.0, 320, 24.5);
-        sensorArray[2] = SensorData(24.8, 70.5, 280, 21.2);
-        sensorArray[3] = SensorData(25.2, 63.3, 310, 27.6);
-        sensorArray[4] = SensorData(26.1, 66.7, 305, 22.6);
+        // sensorArray[0] = SensorData(25.5, 65.2, 300, 22.6);
+        // sensorArray[1] = SensorData(26.0, 64.0, 320, 24.5);
+        // sensorArray[2] = SensorData(24.8, 70.5, 280, 21.2);
+        // sensorArray[3] = SensorData(25.2, 63.3, 310, 27.6);
+        // sensorArray[4] = SensorData(26.1, 66.7, 305, 22.6);
 
         // vTaskDelay(2000 / portTICK_PERIOD_MS);
         
 
-        String json = api->gerarJson(sensorArray, numLeituras);
+        String json = api->gerarJson(sensorArray, 1);
         // gerarJson(&globalSensorData, 1);
         // String json = gerarJson(&globalSensorData, 1);
         Serial.println("[Sensor] JSON gerado:");
+        Serial.println("[TaskSensorReader] Leitura e envio concluídos. Deletando task.");
+
         Serial.println(json);
     
         vTaskDelete(NULL);
