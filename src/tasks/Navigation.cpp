@@ -1,6 +1,6 @@
 #include <freertos/FreeRTOS.h>
 #include "application/Navigation.hpp"
-#include "tasks/navigation.hpp"
+#include "tasks/Navigation.hpp"
 
 using namespace application;
 using namespace drivers;
