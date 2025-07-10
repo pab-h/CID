@@ -45,12 +45,14 @@ bool ApiService::deserializeSteps(const char* jsonBuffer, Step*& stepsOut, uint&
     stepsOut = new Step[countOut];  // alocação dinâmica
 
     for (uint i = 0; i < countOut; i++) {
+        
         JsonObject obj = array[i];
-        stepsOut[i] = Step(
-            obj["howLong"] | 0,
-            obj["atAngle"] | 0,
-            obj["isMeasure"] | false
-        );
+
+        stepsOut[i].distance  = obj["howLong"]   | 0;
+        stepsOut[i].direction = obj["atAngle"]   | 0;
+        stepsOut[i].sector    = obj["sector"]    | "";
+        stepsOut[i].toMeasure = obj["isMeasure"] | false;
+
     }
 
     return true;
@@ -79,8 +81,8 @@ void ApiService::testDownloadJson() {
                 Serial.println("Parsing OK!");
                 for (uint i = 0; i < count; i++) {
                     Serial.printf("Step %d: howLong=%u, atAngle=%u, isMeasure=%s\n",
-                        i, steps[i].howLong, steps[i].atAngle,
-                        steps[i].isMeasure ? "true" : "false");
+                        i, steps[i].distance, steps[i].direction,
+                        steps[i].toMeasure ? "true" : "false");
                 }
             } else {
                 Serial.println("Erro ao parsear JSON.");

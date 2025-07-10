@@ -84,14 +84,14 @@ void Navigation::setupRotateMotors() {
     this->startAngle = this->angle;
     this->state      = NavigationState::TURNING;
 
-    if (this->currentStep->atAngle > this->angle) {
+    if (this->currentStep->direction > this->angle) {
 
         this->motorLeft->clockwise();
         this->motorRight->counterclockwise();
 
     }
 
-    if (this->currentStep->atAngle < this->angle) {
+    if (this->currentStep->direction < this->angle) {
 
         this->motorLeft->counterclockwise();
         this->motorRight->clockwise();
@@ -126,11 +126,11 @@ void Navigation::stepIdle() {
         return;
     }
 
-    if (this->currentStep->howLong == 0 && this->currentStep->atAngle == this->angle) {
+    if (this->currentStep->distance == 0 && this->currentStep->direction == this->angle) {
         return;
     }
 
-    if (this->currentStep->atAngle != this->angle) {
+    if (this->currentStep->direction != this->angle) {
 
         this->setupRotateMotors();
 
@@ -143,16 +143,16 @@ void Navigation::stepIdle() {
 
 void Navigation::stepMoving() {
 
-    // int distance = this->hodometer->getPosition() - this->startPosition;
+    int distance = this->hodometer->getPosition() - this->startPosition;
 
-    // if (distance >= this->currentStep->howLong) {
+    if (distance >= this->currentStep->distance) {
 
-    //     this->motorLeft->disable();
-    //     this->motorRight->disable();
+        this->motorLeft->disable();
+        this->motorRight->disable();
 
-    //     this->state = NavigationState::IDLE;
+        this->state = NavigationState::IDLE;
 
-    // }
+    }
 
 }
 
@@ -160,7 +160,7 @@ void Navigation::stepTurning() {
 
     int currentAngle = this->angle;  
 
-    if (currentAngle >= this->currentStep->atAngle) {
+    if (currentAngle >= this->currentStep->direction) {
         
         this->motorLeft->disable();
         this->motorRight->disable();

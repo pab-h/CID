@@ -8,13 +8,12 @@ namespace entity {
         
         public:
         
-            uint     howLong;
-            uint16_t atAngle;
-            bool     isMeasure;
-
+            uint     distance;
+            uint16_t direction;
+            String   sector;   
+            bool     toMeasure;
 
             Step();
-            Step(uint howLong, uint16_t atAngle, bool isMeasure);
 
     };
 
