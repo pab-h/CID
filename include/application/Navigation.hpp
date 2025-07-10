@@ -10,27 +10,34 @@ using namespace entity;
 
 namespace application {
     
-    enum class NavigationState {
-        IDLE             ,
-        MOVING           ,
-        TURNING          ,
-        WAITING_MEASURES
+    enum class State   {
+        IDLE           ,
+        MOVING         ,
+        TURNING        ,
+        WAITING_MEASURE
+    };
+    
+    class Notifications {
+        public:
+            bool isMeasureSend;
     };
 
     class Navigation {
 
         private:
 
+            Notifications notifications;
+
             DcMotor*       motorLeft;
             DcMotor*       motorRight;
             RotaryEncoder* hodometer;
 
-            NavigationState state;
-            float           angle;
-            float           startAngle;
-            Travel*         travel;
-            Step*           currentStep;
-            int             startPosition;
+            State   state;
+            float   angle;
+            float   startAngle;
+            Travel* travel;
+            Step*   currentStep;
+            int     startPosition;
 
             void stepIdle();
             void stepMoving();
@@ -45,13 +52,13 @@ namespace application {
             Navigation();
             ~Navigation();
 
-            RotaryEncoder*  getRotaryEncoder();
-            NavigationState getState();
+            RotaryEncoder* getRotaryEncoder();
+            State          getState();
+            Notifications  getNotifications();
 
             void updateAngle(uint pulses);
             void setTravel(Travel* travel);
             void step();
-
 
     };
 

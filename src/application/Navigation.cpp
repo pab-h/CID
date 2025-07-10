@@ -39,7 +39,7 @@ Navigation::Navigation() {
     this->motorRight->setPower(RIGHT_MOTOR_PWM);
 
 
-    this->state         = NavigationState::IDLE;
+    this->state         = State::IDLE;
     this->angle         = 0;
     this->travel        = nullptr;
     this->startAngle    = 0;
@@ -59,7 +59,11 @@ Navigation::~Navigation() {
 
 }
 
-NavigationState Navigation::getState() {
+Notifications Navigation::getNotifications() {
+    return this->notifications;
+}
+
+State Navigation::getState() {
     return this->state;
 }
 
@@ -82,7 +86,7 @@ void Navigation::updateAngle(uint pulses) {
 void Navigation::setupRotateMotors() {
 
     this->startAngle = this->angle;
-    this->state      = NavigationState::TURNING;
+    this->state      = State::TURNING;
 
     if (this->currentStep->direction > this->angle) {
 
@@ -113,7 +117,7 @@ void Navigation::setupForwardMotors() {
     this->motorLeft->enable();
     this->motorRight->enable();
 
-    this->state = NavigationState::MOVING;
+    this->state = State::MOVING;
     
 
 }
@@ -153,12 +157,12 @@ void Navigation::stepMoving() {
     this->motorRight->disable();
 
     if (this->currentStep->toMeasure) {
-        this->state = NavigationState::WAITING_MEASURES;
+        this->state = State::WAITING_MEASURE;
         return;
     }
 
-    this->state = NavigationState::IDLE;
-    
+    this->state = State::IDLE;
+
 }
 
 void Navigation::stepTurning() {
@@ -182,10 +186,10 @@ void Navigation::stepWaiting() {};
 void Navigation::step() {
 
     switch (this->state) {
-        case    NavigationState::IDLE             : return this->stepIdle();
-        case    NavigationState::MOVING           : return this->stepMoving();
-        case    NavigationState::TURNING          : return this->stepTurning();
-        case    NavigationState::WAITING_MEASURES : return this->stepWaiting();
+        case    State::IDLE             : return this->stepIdle();
+        case    State::MOVING           : return this->stepMoving();
+        case    State::TURNING          : return this->stepTurning();
+        case    State::WAITING_MEASURE  : return this->stepWaiting();
         default                                   : return;
     }
 
