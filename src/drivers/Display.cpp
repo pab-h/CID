@@ -96,7 +96,7 @@ void Display::showWiFiSignal(uint8_t level) {
     // 4. Print Wi-Fi
     display.setTextSize(1);
     display.setTextColor(SSD1306_WHITE);
-    display.setCursor(26, 5);
+    display.setCursor(26, 4);
     display.print("Wi-Fi");
 
 }

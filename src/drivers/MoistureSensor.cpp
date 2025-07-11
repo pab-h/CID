@@ -18,19 +18,15 @@ MoistureSensor::MoistureSensor(uint8_t pin) {
 
 uint16_t MoistureSensor::read(){
 
-    // return analogRead(this->pin);
-    return 2000;
+    return analogRead(this->pin);
 
 }
 
 uint8_t MoistureSensor::readPercentage(){
 
-    // int percentage = map(this->read(), this->minValue, this->maxValue, 100, 0);
-    // percentage = constrain(percentage, 0, 100);
+    int percentage = map(this->read(), this->minValue, this->maxValue, 100, 0);
 
-    // return percentage;
-
-    return 60;
+    return constrain(percentage, 0, 100);
 
 }
 

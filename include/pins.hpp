@@ -17,13 +17,13 @@
 
 /* Sensors pins */
 
-#define SOIL_MOISTURE_PIN 6 // Analog pin
-#define LDR_PIN  8          // Analog pin
-#define TEMP_PIN 16         // Digital pin
+#define SOIL_MOISTURE_PIN 4 // Analog pin
+#define TEMP_PIN 5          // Digital pin
+#define LDR_PIN  6          // Analog pin
 
 /* I2C Pins */
 #define I2C_SCL 7
 #define I2C_SDA 15
 
 /* BATTERY PIN */
-#define BATTERY_PIN 34 // A DEFINIR
+#define BATTERY_PIN 8 // A DEFINIR

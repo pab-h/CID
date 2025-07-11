@@ -1,10 +1,10 @@
-//Responsabilidade: somente lidar com a conexão Wi-Fi. //
-
 #include <Arduino.h>
 #include <WiFiClient.h>
 #include <WiFi.h>
 
-#include "drivers/wifi.hpp"
+#include "drivers/Wifi.hpp"
+
+using namespace drivers;
 
 String WifiDriver::getSSID() {
   return this->ssid;
@@ -73,7 +73,12 @@ bool WifiDriver::isConnected(){
   return WiFi.status() == WL_CONNECTED;
 }
 
+int WifiDriver::getRSSI() const {
 
+    if (WiFi.status() != WL_CONNECTED) return -127;
+    return WiFi.RSSI();
+
+}
 
 // // Inicializa os atributos estáticos
 // String WifiDriver::_ssid = "";

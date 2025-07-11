@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "drivers/Wifi.hpp"
 
 namespace application {
     
@@ -108,18 +109,6 @@ namespace application {
             void setCurrentSector(const std::string& sector);
 
             /* > Class general functions < */
-            
-            /**
-             * @brief Reads the current Wi-Fi RSSI and updates the connection level (0–4).
-             * 
-             * RSSI is mapped into:
-             * - ≥ -50 dBm → 4 (excellent)
-             * - ≥ -60 dBm → 3 (good)
-             * - ≥ -70 dBm → 2 (fair)
-             * - ≥ -80 dBm → 1 (weak)
-             * - < -80 dBm → 0 (very weak)
-             */
-            void updateConnectionFromWiFi();
 
             /**
              * @brief Reads the ADC pin and updates the battery level percentage.

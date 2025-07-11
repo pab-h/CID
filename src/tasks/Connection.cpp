@@ -6,19 +6,17 @@
 #include <HTTPClient.h>
 
 // Importações
-#include "drivers/wifi.hpp"
+#include "drivers/Wifi.hpp"
 #include "entity/Travel.hpp"
-//#include "entity/SensorData.hpp"
 #include "application/ApiService.hpp"
-//#include "application/SensorManager.hpp" 
 #include "application/Measurement.hpp"
 #include "globals.hpp"
 
 //using namespace entity;
 using namespace application; 
 
-extern TaskHandle_t sensorReaderHandle;
-extern TaskHandle_t dataSenderHandle;
+TaskHandle_t sensorReaderHandle;
+TaskHandle_t dataSenderHandle;
 
 //Usando a entidade global para armazenar os valores lidos nos sensores
 const int numLeituras = 5;
@@ -73,7 +71,7 @@ void TaskSensorReader(void* pvParameters) {
 
       Serial.println("[TaskSensorReader] Dispositivo parou! Iniciando leitura e envio único...");
 
-      application::SensorData currentSensorData = measurement.getMeasures().data;
+      application::MeasurementResponse currentSensorData = measurement.getMeasures();
         // Simulando leitura real
         // sensorArray[0] = SensorData(25.5, 65.2, 300, 22.6);
         // sensorArray[1] = SensorData(26.0, 64.0, 320, 24.5);
@@ -84,7 +82,7 @@ void TaskSensorReader(void* pvParameters) {
         // vTaskDelay(2000 / portTICK_PERIOD_MS);
         
 
-        String json = api->gerarJson(currentSensorData, 1);
+        String json = api->gerarJson(currentSensorData);
         // gerarJson(&globalSensorData, 1);
         // String json = gerarJson(&globalSensorData, 1);
         Serial.println("[Sensor] JSON gerado:");

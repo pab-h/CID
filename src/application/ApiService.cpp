@@ -1,12 +1,9 @@
-//Regras de Negócio
 #include <ArduinoJson.h>
 #include <WiFi.h>
-#include <HTTPClient.h>
 #include <WiFiClient.h>
-
-#include "drivers/wifi.hpp"
+#include <HTTPClient.h>
+#include "drivers/Wifi.hpp"
 #include "application/ApiService.hpp"
-//#include "entity/SensorData.hpp"
 #include "application/Measurement.hpp"
 
 using namespace entity;
@@ -15,26 +12,42 @@ using namespace application;
 extern TaskHandle_t sensorReaderHandle;
 extern TaskHandle_t dataSenderHandle;
 
-ApiService::ApiService() {
+ApiService::ApiService() {}
 
-    this->wifi = new WifiDriver("Oie", "12345678");
+void ApiService::begin(String ssid, String password) {
 
+    this->wifi = new WifiDriver(ssid, password);
     this->wifi->connect();
 
 }
 
 WifiDriver* ApiService::getWifi() {
+
     return this->wifi;
+
+}
+
+uint8_t ApiService::getSignalLevel() {
+    
+    if (!wifi || !wifi->isConnected()) return 0;
+
+    int rssi = WiFi.RSSI();
+    if (rssi >= -50) return 4;
+    else if (rssi >= -60) return 3;
+    else if (rssi >= -70) return 2;
+    else if (rssi >= -80) return 1;
+    else return 0;
+
 }
 
 bool ApiService::deserializeSteps(const char* jsonBuffer, Step*& stepsOut, uint& countOut) {
 
-    StaticJsonDocument<2048> doc; //Se precisar pode aumentar para receber o JSON
+    StaticJsonDocument<2048> doc;
 
     DeserializationError error = deserializeJson(doc, jsonBuffer);
 
     if (error) {
-        Serial.print(F("Erro ao desserializar JSON: "));
+        Serial.println("[API Service] Erro ao desserializar JSON:");
         Serial.println(error.f_str());
         stepsOut = nullptr;
         countOut = 0;
@@ -43,7 +56,7 @@ bool ApiService::deserializeSteps(const char* jsonBuffer, Step*& stepsOut, uint&
 
     JsonArray array = doc.as<JsonArray>();
     countOut = array.size();
-    stepsOut = new Step[countOut];  // alocação dinâmica
+    stepsOut = new Step[countOut];
 
     for (uint i = 0; i < countOut; i++) {
         JsonObject obj = array[i];
@@ -55,11 +68,12 @@ bool ApiService::deserializeSteps(const char* jsonBuffer, Step*& stepsOut, uint&
     }
 
     return true;
+
 }
 
 void ApiService::testDownloadJson() {
 
-    Serial.println("Buscando dados da API ...");
+    Serial.println("[API Service] Buscando dados da API ...");
 
     if (this->wifi->isConnected()) {
         WiFiClient client;
@@ -69,44 +83,47 @@ void ApiService::testDownloadJson() {
         int httpCode = http.GET();
 
         if (httpCode > 0) {
+            Serial.println("[API Service] Resposta da API:");
             String payload = http.getString();
-            Serial.println("Resposta da API:");
             Serial.println(payload);
 
             Step* steps = nullptr;
             uint count = 0;
 
             if (deserializeSteps(payload.c_str(), steps, count)) {
-                Serial.println("Parsing OK!");
+                Serial.println("[API Service] Parsing OK!");
                 for (uint i = 0; i < count; i++) {
                     Serial.printf("Step %d: howLong=%u, atAngle=%u, isMeasure=%s\n",
                         i, steps[i].howLong, steps[i].atAngle,
                         steps[i].isMeasure ? "true" : "false");
                 }
             } else {
-                Serial.println("Erro ao parsear JSON.");
+                Serial.println("[API Service] Erro ao parsear JSON.");
             }
         } else {
-            Serial.printf("Erro HTTP: %d\n", httpCode);
+            Serial.print("[API Service] Erro HTTP: ");
+            Serial.println(httpCode);
         }
 
         http.end();
     } else {
-        Serial.println("WiFi não conectado.");
+        Serial.println("[API Service] WiFi não conectado.");
     }
 
-    Serial.println("Dados recebidos da API e convertidos com sucesso!");
-    Serial.println("Chamando a task de enviar os dados para navegação ... ");
+    Serial.println("[API Service] Dados recebidos da API e convertidos com sucesso!");
+    Serial.println("[API Service] Chamando a task de enviar os dados para navegação ... ");
     xTaskNotifyGive(sensorReaderHandle);
-    Serial.println("Acordei o preguiçoso!");
+    Serial.println("[API Service] Acordei o preguiçoso!");
 
 }
 
-void ApiService::enviarDadosParaApi(SensorData leituras, uint count) {
-    String json = gerarJson(leituras, count);
-    Serial.println("JSON a ser enviado:");
+void ApiService::enviarDadosParaApi(MeasurementResponse resp) {
+
+    Serial.println("[API Service] JSON a ser enviado:");
+    String json = gerarJson(resp);
     Serial.println(json);
-    Serial.println("Simulação que o dado foi enviado corretamente!");
+    Serial.println("[API Service] Simulação que o dado foi enviado corretamente!");
+
     // Para enviar via POST futuramente:
     /*
     if (WiFi.status() == WL_CONNECTED) {
@@ -116,35 +133,30 @@ void ApiService::enviarDadosParaApi(SensorData leituras, uint count) {
         http.addHeader("Content-Type", "application/json");
 
         int httpResponseCode = http.POST(json);
-        Serial.printf("Resposta da API: %d\n", httpResponseCode);
+        Serial.print("[API Service] Resposta da API: ");
+        Serial.println(httpResponseCode);
 
         http.end();
     } else {
-        Serial.println("Wi-Fi não conectado.");
+        Serial.println("[API Service] Wi-Fi não conectado.");
     }
     */
+
 }
 
-String ApiService::gerarJson(SensorData leituras, uint count) {
+String ApiService::gerarJson(const MeasurementResponse& resp) {
 
     StaticJsonDocument<512> doc;
+    JsonObject obj = doc.to<JsonObject>();
 
-    JsonArray array = doc.to<JsonArray>();
-
-
-    JsonObject obj = array.createNestedObject();
-
-    obj["temperature"] = leituras.temperature;
-    obj["humidity"] = leituras.humidity;
-    obj["moisture"] = leituras.soilMoisture;
-    obj["luminosity"] = leituras.luminosity;
+    resp.toJson(obj);
 
     String json;
     serializeJsonPretty(doc, json);
-    Serial.println("Dados dos sensores foram devidamente recebidos e convertidos para JSON!");
-    Serial.println("Chamando a task para enviar esses dados para API ...");
 
-    // xTaskNotifyGive(dataSenderHandle); // a chamada para a proxima task
-    Serial.println("Acordei o segundo preguiçoso!");
+    Serial.println("[API Service] Json gerado com sucesso!");
+    Serial.println(json);
+
     return json;
+
 }
