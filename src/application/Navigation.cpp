@@ -109,16 +109,11 @@ void Navigation::setupRotateMotors() {
 
 void Navigation::setupForwardMotors() {
 
-    this->startPosition = this->hodometer->getPosition();
-
     this->motorLeft->clockwise();
     this->motorRight->clockwise();
 
     this->motorLeft->enable();
-    this->motorRight->enable();
-
-    this->state = State::MOVING;
-    
+    this->motorRight->enable();    
 
 }
 
@@ -141,7 +136,9 @@ void Navigation::stepIdle() {
         return;
     }
 
+    this->startPosition = this->hodometer->getPosition();
     this->setupForwardMotors();
+    this->state = State::MOVING;
 
 }
 
@@ -174,13 +171,28 @@ void Navigation::stepTurning() {
         this->motorLeft->disable();
         this->motorRight->disable();
 
+        this->startPosition = this->hodometer->getPosition();
         this->setupForwardMotors();
+        this->state = State::MOVING;
 
     }
 
 }
 
 void Navigation::stepWaiting() {};
+
+void Navigation::stepInserting() {
+
+    this->setupForwardMotors();
+
+    int distance = this->hodometer->getPosition() - this->startPosition;
+
+    if (distance >= 3) {
+        this->state                         = State::WAITING_MEASURE;
+        this->notifications.isInsertingDone = true;
+    }
+
+}
 
 
 void Navigation::step() {
@@ -190,7 +202,7 @@ void Navigation::step() {
         case    State::MOVING           : return this->stepMoving();
         case    State::TURNING          : return this->stepTurning();
         case    State::WAITING_MEASURE  : return this->stepWaiting();
-        default                                   : return;
+        default                         : return;
     }
 
 }
