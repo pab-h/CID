@@ -1,9 +1,10 @@
 #include "globals.hpp"
 #include "pins.hpp"
 
-application::Measurement measurement;
+application::Measurement  measurement;
 application::SystemStatus systemStatus;
 application::ApiService api;
+application::Navigation   navigation;
 drivers::Display display;
 
 void initGlobals() {

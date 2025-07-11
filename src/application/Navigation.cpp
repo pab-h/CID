@@ -39,7 +39,7 @@ Navigation::Navigation() {
     this->motorRight->setPower(RIGHT_MOTOR_PWM);
 
 
-    this->state         = NavigationState::IDLE;
+    this->state         = State::IDLE;
     this->angle         = 0;
     this->travel        = nullptr;
     this->startAngle    = 0;
@@ -59,7 +59,11 @@ Navigation::~Navigation() {
 
 }
 
-NavigationState Navigation::getState() {
+Notifications* Navigation::getNotifications() {  
+    return &this->notifications;
+}
+
+State Navigation::getState() {
     return this->state;
 }
 
@@ -82,16 +86,16 @@ void Navigation::updateAngle(uint pulses) {
 void Navigation::setupRotateMotors() {
 
     this->startAngle = this->angle;
-    this->state      = NavigationState::TURNING;
+    this->state      = State::TURNING;
 
-    if (this->currentStep->atAngle > this->angle) {
+    if (this->currentStep->direction > this->angle) {
 
         this->motorLeft->clockwise();
         this->motorRight->counterclockwise();
 
     }
 
-    if (this->currentStep->atAngle < this->angle) {
+    if (this->currentStep->direction < this->angle) {
 
         this->motorLeft->counterclockwise();
         this->motorRight->clockwise();
@@ -113,7 +117,7 @@ void Navigation::setupForwardMotors() {
     this->motorLeft->enable();
     this->motorRight->enable();
 
-    this->state = NavigationState::MOVING;
+    this->state = State::MOVING;
     
 
 }
@@ -126,11 +130,11 @@ void Navigation::stepIdle() {
         return;
     }
 
-    if (this->currentStep->howLong == 0 && this->currentStep->atAngle == this->angle) {
+    if (this->currentStep->distance == 0 && this->currentStep->direction == this->angle) {
         return;
     }
 
-    if (this->currentStep->atAngle != this->angle) {
+    if (this->currentStep->direction != this->angle) {
 
         this->setupRotateMotors();
 
@@ -143,16 +147,21 @@ void Navigation::stepIdle() {
 
 void Navigation::stepMoving() {
 
-    // int distance = this->hodometer->getPosition() - this->startPosition;
+    int distance = this->hodometer->getPosition() - this->startPosition;
 
-    // if (distance >= this->currentStep->howLong) {
+    if (distance <= this->currentStep->distance) {
+        return;
+    }
 
-    //     this->motorLeft->disable();
-    //     this->motorRight->disable();
+    this->motorLeft->disable();
+    this->motorRight->disable();
 
-    //     this->state = NavigationState::IDLE;
+    if (this->currentStep->toMeasure) {
+        this->state = State::WAITING_MEASURE;
+        return;
+    }
 
-    // }
+    this->state = State::IDLE;
 
 }
 
@@ -160,7 +169,7 @@ void Navigation::stepTurning() {
 
     int currentAngle = this->angle;  
 
-    if (currentAngle >= this->currentStep->atAngle) {
+    if (currentAngle >= this->currentStep->direction) {
         
         this->motorLeft->disable();
         this->motorRight->disable();
@@ -171,14 +180,17 @@ void Navigation::stepTurning() {
 
 }
 
+void Navigation::stepWaiting() {};
+
 
 void Navigation::step() {
 
     switch (this->state) {
-        case    NavigationState::IDLE    : return this->stepIdle();
-        case    NavigationState::MOVING  : return this->stepMoving();
-        case    NavigationState::TURNING : return this->stepTurning();
-        default                          : return;
+        case    State::IDLE             : return this->stepIdle();
+        case    State::MOVING           : return this->stepMoving();
+        case    State::TURNING          : return this->stepTurning();
+        case    State::WAITING_MEASURE  : return this->stepWaiting();
+        default                                   : return;
     }
 
 }
