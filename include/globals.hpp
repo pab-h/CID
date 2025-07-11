@@ -14,8 +14,8 @@
 
 #include "application/Measurement.hpp"
 #include "application/SystemStatus.hpp"
+#include "application/ApiService.hpp"
 #include "application/Navigation.hpp"
-
 #include "drivers/Display.hpp"
 
 /// Global instance for managing environmental measurements.
@@ -26,6 +26,9 @@ extern application::Navigation navigation;
 
 /// Global instance for tracking the current state of the system (battery, activity, connectivity, etc).
 extern application::SystemStatus systemStatus;
+
+/// Global instance for managing API communication
+extern application::ApiService api;
 
 /// Global instance for handling the OLED display interface.
 extern drivers::Display display;

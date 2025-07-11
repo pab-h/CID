@@ -1,20 +1,26 @@
 #include <Arduino.h>
-#include "globals.hpp"
-#include "tasks/Measurement.hpp"
-#include "tasks/SystemStatus.hpp"
+
+#include "application/ApiService.hpp"
 #include "application/Measurement.hpp"
 #include "drivers/Display.hpp"
+#include "tasks/Connection.hpp"
+#include "tasks/Measurement.hpp"
+#include "tasks/SystemStatus.hpp"
+#include "globals.hpp"
 
-using namespace application;
-
-void setup(){
-
-    initGlobals();
+void setup() {
 
     Serial.begin(115200);
     while (!Serial){}
 
+    initGlobals();
+
     TaskHandle_t loopHandle = xTaskGetCurrentTaskHandle();
+
+    xTaskCreatePinnedToCore(wifiMonitorTask, "WiFi Manager", 8192, &api, 2, NULL, 0);
+    // xTaskCreatePinnedToCore(TaskRouteReceiver, "Receive Travel", 4096, api, 1, NULL, 0);
+    xTaskCreatePinnedToCore(TaskSensorReader, "Read Sensors", 4096, &api, 1, &sensorReaderHandle, 1);
+    xTaskCreatePinnedToCore(TaskDataSender, "Send Sensors", 4096, &api, 1, &dataSenderHandle, 1);
 
     xTaskCreatePinnedToCore(tasks::vSensorManagerTask, "SensorManager", 4096, loopHandle, 2, &tasks::xSensorManagerTaskHandle, 0);
     xTaskCreatePinnedToCore(tasks::vMeasureTemperatureHumidityTask, "MeasureTempHum", 2048, NULL, 3, &tasks::xMeasureTempHumTaskHandle, 0);
@@ -27,6 +33,8 @@ void setup(){
 
 }
 
+using namespace application;
+
 void loop() {
 
     xTaskNotifyGive(tasks::xSensorManagerTaskHandle);
@@ -38,6 +46,7 @@ void loop() {
     Serial.printf("Umidade: %.2f %%\n", resp.data.humidity);
     Serial.printf("Umidade do solo: %d %%\n", resp.data.soilMoisture);
     Serial.printf("Luminosidade: %d %%\n", resp.data.luminosity);
+    Serial.printf("WIFI LEVEL: %s", String(systemStatus.getConnectionLevel()));
     
     Serial.println("-----------------------");
 

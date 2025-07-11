@@ -14,7 +14,7 @@ namespace tasks {
         while (true) {
 
             systemStatus.measureAndUpdateBatteryLevel(BATTERY_PIN);
-            systemStatus.updateConnectionFromWiFi();
+            systemStatus.setConnectionLevel(api.getSignalLevel());
 
             display.updateFromSystemStatus(systemStatus);
 

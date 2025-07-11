@@ -1,6 +1,7 @@
 #include "application/SystemStatus.hpp"
 #include <algorithm>
 
+
 namespace application {
 
     SystemStatus::SystemStatus()
@@ -55,11 +56,6 @@ namespace application {
     }
 
     /* General functions */
-    
-    //Implementar depois
-    void SystemStatus::updateConnectionFromWiFi(){
-        return;
-    }
     
     //Implementar essa função depois
     void SystemStatus::measureAndUpdateBatteryLevel(uint8_t adcPin){
