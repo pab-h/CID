@@ -20,10 +20,16 @@ void tasks::vNavigationNotificationsTask(void* pvParameters) {
             notifications->isMeasureSend = true;
         }
     
+        if (navigation->getState() == State::WAITING_MEASURE && notifications->isInsertingDone) {
+            
+            // xTaskNotify
+
+            notifications->isInsertingDone = false;
+        }
+
         vTaskDelay(pdMS_TO_TICKS(50));
 
     }
-
 
 }
 

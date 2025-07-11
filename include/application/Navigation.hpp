@@ -11,15 +11,17 @@ using namespace entity;
 namespace application {
     
     enum class State   {
-        IDLE           ,
-        MOVING         ,
-        TURNING        ,
-        WAITING_MEASURE
+        IDLE             ,
+        MOVING           ,
+        TURNING          ,
+        WAITING_MEASURE  ,
+        INSERTING_SENSOR
     };
     
     class Notifications {
         public:
             bool isMeasureSend;
+            bool isInsertingDone;
     };
 
     class Navigation {
@@ -43,6 +45,7 @@ namespace application {
             void stepMoving();
             void stepTurning();
             void stepWaiting();
+            void stepInserting();
 
             void setupRotateMotors();
             void setupForwardMotors();
