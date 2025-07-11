@@ -6,22 +6,6 @@ using namespace application;
 using namespace drivers;
 using namespace tasks;
 
-void tasks::vUpdateTravelNavigationTask(void* pvParameters) {
-
-    Navigation* navigation     = static_cast<Navigation*>(pvParameters);
-    Travel*     receivedTravel = nullptr;
-
-    while (true) {
-
-        if (xQueueReceive(xTravelQueue, &receivedTravel, portMAX_DELAY) == pdTRUE) {
-            navigation->setTravel(receivedTravel);
-        }
-
-        vTaskDelay(pdMS_TO_TICKS(1000));
-    }
-    
-}
-
 void tasks::vNavigationNotificationsTask(void* pvParameters) {
 
     Navigation*    navigation    = static_cast<Navigation*>(pvParameters);
