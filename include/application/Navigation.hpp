@@ -54,7 +54,7 @@ namespace application {
 
             RotaryEncoder* getRotaryEncoder();
             State          getState();
-            Notifications  getNotifications();
+            Notifications* getNotifications();
 
             void updateAngle(uint pulses);
             void setTravel(Travel* travel);

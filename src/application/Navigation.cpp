@@ -59,8 +59,8 @@ Navigation::~Navigation() {
 
 }
 
-Notifications Navigation::getNotifications() {
-    return this->notifications;
+Notifications* Navigation::getNotifications() {  
+    return &this->notifications;
 }
 
 State Navigation::getState() {
