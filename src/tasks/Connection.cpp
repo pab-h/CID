@@ -82,7 +82,7 @@ void TaskSensorReader(void* pvParameters) {
         // vTaskDelay(2000 / portTICK_PERIOD_MS);
         
 
-        String json = api->gerarJson(currentSensorData);
+        String json = api->generateJson(currentSensorData);
         // gerarJson(&globalSensorData, 1);
         // String json = gerarJson(&globalSensorData, 1);
         Serial.println("[Sensor] JSON gerado:");

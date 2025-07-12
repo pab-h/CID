@@ -2,6 +2,7 @@
 
 #include "entity/Step.hpp"  
 #include "application/Measurement.hpp" 
+#include "SystemStatus.hpp"
 #include <ArduinoJson.h> 
 
 #include "drivers/Wifi.hpp"
@@ -56,7 +57,7 @@ namespace application {
              * 
              * @param resp Structure containing measurement data to send.
              */
-            void enviarDadosParaApi(MeasurementResponse resp);
+            void sendDataToApi(const MeasurementResponse resp);
 
             /**
              * @brief Generates a JSON string from the measurement response.
@@ -64,7 +65,15 @@ namespace application {
              * @param resp Constant reference to the measurement response structure.
              * @return String containing the formatted JSON.
              */
-            String gerarJson(const MeasurementResponse& resp);
+            String generateJson(const MeasurementResponse& resp);
+
+            /**
+             * @brief Generates a JSON string from the System Status.
+             * 
+             * @param resp Constant reference to the measurement StatusData structure.
+             * @return String containing the formatted JSON.
+             */
+            String generateJson(const StatusData& status);
 
             /**
              * @brief Returns the pointer to the Wi-Fi driver in use.
@@ -86,7 +95,6 @@ namespace application {
              * @return uint8_t Signal strength level.
              */
             uint8_t getSignalLevel();
-
 
     };
 

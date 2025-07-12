@@ -37,12 +37,6 @@ namespace application{
         uint16_t soilMoisture = 0;  /**< Soil moisture (normalizated %) */
         uint16_t luminosity = 0;    /**< Luminosity (normalizated %) */
     
-        /**
-         * @brief Converts sensor data to JSON.
-         * 
-         * @param obj JSON object where the data will be inserted.
-         */
-        void toJson(JsonObject& obj) const; 
     };
 
     /**
@@ -68,12 +62,6 @@ namespace application{
     
         SensorData data;                                                /**< Sensor measurement data */
         uint8_t error = static_cast<uint8_t>(MeasurementError::NONE);  /**< Detected errors */
-
-        /* @brief Converts the measurement response to JSON.
-         * 
-         * @param obj JSON object where data and errors will be inserted.
-         */
-        void toJson(JsonObject& obj) const; 
     
     };
 

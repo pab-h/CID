@@ -1,8 +1,18 @@
 #include "application/SystemStatus.hpp"
 #include <algorithm>
 
-
 namespace application {
+
+    std::string StatusData::activityToString() const {
+        switch (currentActivity) {
+            case Activity::IDLE:        return "Idle";
+            case Activity::MOVING:      return "Moving";
+            case Activity::SENSING:     return "Sensing";
+            case Activity::CONNECTING:  return "Connecting";
+            case Activity::ERROR:       return "Error";
+            default:                    return "Unknown";
+        }
+    }
 
     SystemStatus::SystemStatus()
         : currentSector("Base"),

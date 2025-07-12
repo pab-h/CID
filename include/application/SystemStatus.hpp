@@ -20,10 +20,18 @@ namespace application {
      * @brief Snapshot structure representing the current system status.
      */
     struct StatusData {
+
         uint8_t batteryLevel;        ///< Battery level percentage (0–100%)
         uint8_t connectionLevel;     ///< Wi-Fi signal level (0–4)
         Activity currentActivity;    ///< Current activity being performed
         std::string currentSector;   ///< Current or target sector name
+
+        /**
+         * @brief Converts the current activity into a readable string.
+         * @return std::string The current activity as a string.
+         */
+        std::string activityToString() const;
+
     };
 
     /**
