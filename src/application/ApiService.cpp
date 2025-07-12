@@ -117,10 +117,10 @@ void ApiService::testDownloadJson() {
 
 }
 
-void ApiService::enviarDadosParaApi(MeasurementResponse resp) {
+void ApiService::sendDataToApi(MeasurementResponse resp) {
 
     Serial.println("[API Service] JSON a ser enviado:");
-    String json = gerarJson(resp);
+    String json = generateJson(resp);
     Serial.println(json);
     Serial.println("[API Service] Simulação que o dado foi enviado corretamente!");
 
@@ -144,17 +144,54 @@ void ApiService::enviarDadosParaApi(MeasurementResponse resp) {
 
 }
 
-String ApiService::gerarJson(const MeasurementResponse& resp) {
-
+String ApiService::generateJson(const MeasurementResponse& resp) {
+    
     StaticJsonDocument<512> doc;
-    JsonObject obj = doc.to<JsonObject>();
+    JsonObject root = doc.to<JsonObject>();
 
-    resp.toJson(obj);
+    JsonObject data = root.createNestedObject("data");
+    data["temperature"] = resp.data.temperature;
+    data["humidity"] = resp.data.humidity;
+    data["soilMoisture"] = resp.data.soilMoisture;
+    data["luminosity"] = resp.data.luminosity;
+
+    JsonArray errors = root.createNestedArray("errors");
+
+    if (resp.error == static_cast<uint8_t>(MeasurementError::NONE)) {
+        errors.add("NONE");
+    } else {
+        if (resp.error & static_cast<uint8_t>(MeasurementError::BUSY)) errors.add("BUSY");
+        if (resp.error & static_cast<uint8_t>(MeasurementError::INCOMPLETE)) errors.add("INCOMPLETE");
+        if (resp.error & static_cast<uint8_t>(MeasurementError::TEMPERATURE_FAIL)) errors.add("TEMPERATURE_FAIL");
+        if (resp.error & static_cast<uint8_t>(MeasurementError::HUMIDITY_FAIL)) errors.add("HUMIDITY_FAIL");
+        if (resp.error & static_cast<uint8_t>(MeasurementError::MOISTURE_FAIL)) errors.add("MOISTURE_FAIL");
+        if (resp.error & static_cast<uint8_t>(MeasurementError::LUMINOSITY_FAIL)) errors.add("LUMINOSITY_FAIL");
+    }
 
     String json;
     serializeJsonPretty(doc, json);
 
-    Serial.println("[API Service] Json gerado com sucesso!");
+    Serial.println("[ApiService] JSON do Measurement gerado:");
+    Serial.println(json);
+
+    return json;
+
+}
+
+
+String generateJson(const StatusData& status) {
+
+    StaticJsonDocument<256> doc;
+
+    doc["batteryLevel"] = status.batteryLevel;
+    doc["connectionLevel"] = status.connectionLevel;
+    doc["currentActivity"] = static_cast<int>(status.currentActivity);
+    doc["currentSector"] = status.currentSector;
+
+    String json;
+    serializeJsonPretty(doc, json);
+
+    Serial.println("[ApiService] JSON do Status gerado:");
     Serial.println(json);
 
     return json;

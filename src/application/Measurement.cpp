@@ -1,40 +1,7 @@
 #include <application/Measurement.hpp>
 #include <Arduino.h>
-#include <ArduinoJson.h>
 
 using namespace application;
-
-void SensorData::toJson(JsonObject& obj) const {
-
-    obj["temperature"] = temperature;
-    obj["humidity"] = humidity;
-    obj["soilMoisture"] = soilMoisture;
-    obj["luminosity"] = luminosity;
-
-}
-
-void MeasurementResponse::toJson(JsonObject& obj) const {
-
-    JsonObject dataObj = obj.createNestedObject("data");
-    data.toJson(dataObj);
-
-    JsonArray errors = obj.createNestedArray("errors");
-
-    if (error == static_cast<uint8_t>(MeasurementError::NONE)) {
-
-        errors.add("NONE");
-        return;
-
-    }
-
-    if (error & static_cast<uint8_t>(MeasurementError::BUSY)) errors.add("BUSY");
-    if (error & static_cast<uint8_t>(MeasurementError::INCOMPLETE)) errors.add("INCOMPLETE");
-    if (error & static_cast<uint8_t>(MeasurementError::TEMPERATURE_FAIL)) errors.add("TEMPERATURE_FAIL");
-    if (error & static_cast<uint8_t>(MeasurementError::HUMIDITY_FAIL)) errors.add("HUMIDITY_FAIL");
-    if (error & static_cast<uint8_t>(MeasurementError::MOISTURE_FAIL)) errors.add("MOISTURE_FAIL");
-    if (error & static_cast<uint8_t>(MeasurementError::LUMINOSITY_FAIL)) errors.add("LUMINOSITY_FAIL");
-
-}
 
 Measurement::Measurement(){
 
