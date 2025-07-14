@@ -13,26 +13,30 @@ using namespace entity;
 Navigation     nav;
 RotaryEncoder* encoder;
 
-const char* stateToString(NavigationState state) {
-
-    switch (state) {
-        case    NavigationState::IDLE    : return "IDLE";
-        case    NavigationState::MOVING  : return "MOVING";
-        case    NavigationState::TURNING : return "TURNING";
-        default                          : return "UNKNOWN";
-    }
-
-}
-
 void setup() {
 
     Serial.begin(9600);
 
     Step* steps = new Step[3];
     
-    steps[0] = Step(1, 0, false);
-    steps[1] = Step(2, 0, false);
-    steps[2] = Step(3, 0, false);
+    steps[0]           = Step();
+    steps[0].distance  = 1;
+    steps[0].direction = 0;
+    steps[0].sector    = "";
+    steps[0].toMeasure = false;
+
+    steps[1]           = Step();
+    steps[1].distance  = 5;
+    steps[1].direction = 0;
+    steps[1].sector    = "Brazil";
+    steps[1].toMeasure = true;
+
+    steps[2]           = Step();
+    steps[2].distance  = 10;
+    steps[2].direction = 10;
+    steps[2].sector    = "";
+    steps[2].toMeasure = false;
+
 
     Travel* travel = new Travel(steps, 3);
 
@@ -49,9 +53,6 @@ void loop() {
 
     encoder->read();
     nav.step();
-
-    Serial.print("STATE            = " + String(stateToString(nav.getState())) + " ");
-    Serial.print("POSITION ENCODER = " + String(encoder->getPosition())        + "\n");
 
     delay(250);
 
