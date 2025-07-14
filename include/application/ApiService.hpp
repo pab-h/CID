@@ -58,6 +58,43 @@ namespace application {
             void begin(String ssid, String password);
 
             /**
+             * @brief Returns the pointer to the Wi-Fi driver in use.
+             * 
+             * @return Pointer to WifiDriver.
+             */
+            WifiDriver* getWifi();
+
+            /**
+             * @brief Gets the current Wi-Fi signal strength level (0–4).
+             * 
+             * RSSI is mapped into:
+             * - ≥ -50 dBm → 4 (excellent)
+             * - ≥ -60 dBm → 3 (good)
+             * - ≥ -70 dBm → 2 (fair)
+             * - ≥ -80 dBm → 1 (weak)
+             * - < -80 dBm → 0 (very weak)
+             * 
+             * @return uint8_t Signal strength level.
+             */
+            uint8_t getSignalLevel();
+
+            /**
+             * @brief Generates a JSON string from the measurement response.
+             * 
+             * @param resp Constant reference to the measurement response structure.
+             * @return String containing the formatted JSON.
+             */
+            String generateJson(const MeasurementResponse& resp);
+
+            /**
+             * @brief Generates a JSON string from the System Status.
+             * 
+             * @param resp Constant reference to the measurement StatusData structure.
+             * @return String containing the formatted JSON.
+             */
+            String generateJson(const StatusData& status);
+
+            /**
              * @brief Deserializes a JSON buffer into a dynamic array of Steps.
              * 
              * @param jsonBuffer Buffer containing JSON to be deserialized.
@@ -86,43 +123,6 @@ namespace application {
              * @param resp Structure containing measurement data to send.
              */
             void sendDataToApi(const StatusData& status);
-
-            /**
-             * @brief Generates a JSON string from the measurement response.
-             * 
-             * @param resp Constant reference to the measurement response structure.
-             * @return String containing the formatted JSON.
-             */
-            String generateJson(const MeasurementResponse& resp);
-
-            /**
-             * @brief Generates a JSON string from the System Status.
-             * 
-             * @param resp Constant reference to the measurement StatusData structure.
-             * @return String containing the formatted JSON.
-             */
-            String generateJson(const StatusData& status);
-
-            /**
-             * @brief Returns the pointer to the Wi-Fi driver in use.
-             * 
-             * @return Pointer to WifiDriver.
-             */
-            WifiDriver* getWifi();
-
-            /**
-             * @brief Gets the current Wi-Fi signal strength level (0–4).
-             * 
-             * RSSI is mapped into:
-             * - ≥ -50 dBm → 4 (excellent)
-             * - ≥ -60 dBm → 3 (good)
-             * - ≥ -70 dBm → 2 (fair)
-             * - ≥ -80 dBm → 1 (weak)
-             * - < -80 dBm → 0 (very weak)
-             * 
-             * @return uint8_t Signal strength level.
-             */
-            uint8_t getSignalLevel();
 
     };
 

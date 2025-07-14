@@ -21,6 +21,10 @@ String WifiDriver::getPassword() {
   return this->password;
 }
 
+bool WifiDriver::isConnected(){
+  return WiFi.status() == WL_CONNECTED;
+}
+
 bool WifiDriver::connect() {
 
     if (this->ssid == "" || this->password == "") {
@@ -67,10 +71,6 @@ bool WifiDriver::reconnect(){
   Serial.println("Reconectando Wi-fi ...");
   this->disconnect();
   return this->connect();
-}
-
-bool WifiDriver::isConnected(){
-  return WiFi.status() == WL_CONNECTED;
 }
 
 int WifiDriver::getRSSI() const {

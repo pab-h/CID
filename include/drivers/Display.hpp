@@ -54,14 +54,14 @@ namespace drivers {
         void showBatteryIcon(uint8_t percentage);
 
         /**
-         * @brief displays the current activity performed by the system
+         * @brief Displays the current activity performed by the system
          * @param activity Activity description string.
          */
         void showActivity(const std::string& activity);
 
         /**
          * @brief Displays the current location of cid.
-         * @param  Activity description string.
+         * @param  location description string.
          */
         void showLocation(const std::string& location);
 

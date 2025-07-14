@@ -41,6 +41,13 @@ namespace drivers{
       String getPassword();
 
       /**
+       * @brief Checks if currently connected to Wi-Fi.
+       * 
+       * @return true if connected, false otherwise.
+       */
+      bool isConnected();
+
+      /**
        * @brief Initiates connection to the configured Wi-Fi network.
        * 
        * @return true if connected successfully, false otherwise.
@@ -58,13 +65,6 @@ namespace drivers{
        * @return true if reconnection is successful, false otherwise.
        */
       bool reconnect();
-
-      /**
-       * @brief Checks if currently connected to Wi-Fi.
-       * 
-       * @return true if connected, false otherwise.
-       */
-      bool isConnected();
 
       /**
        * @brief Gets the current Wi-Fi signal strength (RSSI).

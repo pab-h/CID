@@ -1,6 +1,6 @@
-#include "drivers/Display.hpp"
 #include "pins.hpp"
 #include "env.hpp"
+#include "drivers/Display.hpp"
 
 using namespace drivers;
 

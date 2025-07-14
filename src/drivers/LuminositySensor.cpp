@@ -1,6 +1,6 @@
 #include <Arduino.h>
-#include <drivers/LuminositySensor.hpp>
 #include <env.hpp>
+#include <drivers/LuminositySensor.hpp>
 
 using namespace drivers;
 

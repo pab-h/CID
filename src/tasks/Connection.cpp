@@ -22,7 +22,6 @@ namespace tasks{
   TaskHandle_t sensorReaderHandle;
   TaskHandle_t dataSenderHandle;
 
-
   //Usando a entidade global para armazenar os valores lidos nos sensores
   const int numLeituras = 5;
 
@@ -33,12 +32,16 @@ namespace tasks{
 
     vTaskDelay(1);
     while (true) {
+    
       if (!wifi->isConnected()) {
           Serial.println("[WiFiMonitor] Wi-Fi desconectado! Tentando reconectar...");
           wifi->reconnect();
       }
+
       vTaskDelay(pdMS_TO_TICKS(5000)); // espera 5 segundos antes de checar de novo
+
     }
+  
   }
 
 
@@ -48,7 +51,7 @@ namespace tasks{
     WifiDriver*             wifi = api->getWifi(); 
 
     vTaskDelay(1);
-    // Aguarda conexão
+
     while (!wifi->isConnected()) {
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
@@ -58,7 +61,6 @@ namespace tasks{
     vTaskDelete(nullptr); 
 
   }
-
 
   void TaskSensorReader(void* pvParameters) {
   

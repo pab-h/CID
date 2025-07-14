@@ -1,5 +1,5 @@
-#include "drivers/TempHumSensor.hpp"
 #include <env.hpp>
+#include "drivers/TempHumSensor.hpp"
 
 using namespace drivers;
 

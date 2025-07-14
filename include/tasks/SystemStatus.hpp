@@ -7,7 +7,7 @@ namespace tasks {
     extern TaskHandle_t xSystemStatusTaskHandle;
 
     /**
-     * @brief Task que atualiza o status do sistema e o display a cada 2 segundos.
+     * @brief Task that updates the system status and the display every 5 seconds.
      */
     void vSystemStatusTask(void* pvParameters);
 

@@ -1,19 +1,18 @@
-#include "application/SystemStatus.hpp"
 #include <algorithm>
+#include "application/SystemStatus.hpp"
 
 namespace application {
 
     const char* StatusData::activityToString() const {
-    switch (currentActivity) {
-        case Activity::IDLE:        return "Idle";
-        case Activity::MOVING:      return "Moving";
-        case Activity::SENSING:     return "Sensing";
-        case Activity::CONNECTING:  return "Connecting";
-        case Activity::ERROR:       return "Error";
-        default:                    return "Unknown";
-    }   
+        switch (currentActivity) {
+            case Activity::IDLE:        return "Idle";
+            case Activity::MOVING:      return "Moving";
+            case Activity::SENSING:     return "Sensing";
+            case Activity::CONNECTING:  return "Connecting";
+            case Activity::ERROR:       return "Error";
+            default:                    return "Unknown";
+        }   
     }
-
 
     SystemStatus::SystemStatus()
         : currentSector("Base"),
@@ -62,8 +61,6 @@ namespace application {
         strncpy(currentSector, sector, sizeof(currentSector) - 1);
         currentSector[sizeof(currentSector) - 1] = '\0';
     }
-
-
 
     std::string SystemStatus::getCurrentSector() const {
         return currentSector;
