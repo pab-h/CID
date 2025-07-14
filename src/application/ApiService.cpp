@@ -9,6 +9,7 @@
 //using namespace entity;
 using namespace application;
 
+//Provavelmente será deletado
 extern TaskHandle_t sensorReaderHandle;
 extern TaskHandle_t dataSenderHandle;
 
@@ -210,7 +211,7 @@ String ApiService::generateJson(const StatusData& status) {
 
     doc["batteryLevel"] = status.batteryLevel;
     doc["connectionLevel"] = status.connectionLevel;
-    doc["currentActivity"] = static_cast<int>(status.currentActivity);
+    doc["currentActivity"] = status.activityToString();
     doc["currentSector"] = status.currentSector;
 
     String json;

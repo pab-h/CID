@@ -30,7 +30,7 @@ namespace application {
          * @brief Converts the current activity into a readable string.
          * @return std::string The current activity as a string.
          */
-        std::string activityToString() const;
+        const char* activityToString() const;
 
     };
 

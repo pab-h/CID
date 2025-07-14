@@ -11,17 +11,26 @@ using namespace entity;
 
 namespace application {
 
+    /**
+     * @brief Enumerates the types of requests that can be sent via the API.
+     */
     enum class ApiRequestType {
-        SendMeasurement,
-        SendStatus
+        SendMeasurement,  /**< Represents a request to send sensor measurement data */
+        SendStatus        /**< Represents a request to send system status data */
     };
 
+    /**
+     * @brief Structure that encapsulates a message to be sent to the API dispatcher.
+     * 
+     * Depending on the value of `type`, only one of the following fields will be used:
+     * - If `type == SendMeasurement`, the `measurement` field is valid.
+     * - If `type == SendStatus`, the `status` field is valid.
+     */
     struct ApiMessage {
-        ApiRequestType type;
-        MeasurementResponse measurement;
-        StatusData status;
+        ApiRequestType type;                /**< Type of the API request */
+        MeasurementResponse measurement;    /**< Sensor measurement data (valid if type == SendMeasurement) */
+        StatusData status;                  /**< System status data (valid if type == SendStatus) */
     };
-
 
     /**
      * @brief Class responsible for the API service, including Wi-Fi connection,
