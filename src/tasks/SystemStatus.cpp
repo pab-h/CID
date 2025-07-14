@@ -1,5 +1,7 @@
 #include "tasks/SystemStatus.hpp"
 #include "application/SystemStatus.hpp"
+#include "tasks/Connection.hpp"
+#include "application/ApiService.hpp"
 #include "globals.hpp"
 #include "pins.hpp"
 
@@ -18,7 +20,13 @@ namespace tasks {
 
             display.updateFromSystemStatus(systemStatus);
 
-            //Enviar os dados para o sistema web
+            application::ApiMessage msg;
+            msg.type = application::ApiRequestType::SendStatus;
+            msg.status = systemStatus.getStatusData();
+
+            if (xQueueSend(tasks::apiQueue, &msg, 0) != pdTRUE) {
+                Serial.println("[SystemStatusTask] Fila cheia, status não enviado");
+            }
 
             vTaskDelay(pdMS_TO_TICKS(5000));
     

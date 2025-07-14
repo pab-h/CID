@@ -6,9 +6,10 @@
 #include "application/ApiService.hpp"
 #include "application/Measurement.hpp"
 
-using namespace entity;
+//using namespace entity;
 using namespace application;
 
+//Provavelmente será deletado
 extern TaskHandle_t sensorReaderHandle;
 extern TaskHandle_t dataSenderHandle;
 
@@ -119,7 +120,7 @@ void ApiService::testDownloadJson() {
 
 }
 
-void ApiService::sendDataToApi(MeasurementResponse resp) {
+void ApiService::sendDataToApi(const MeasurementResponse& resp) {
 
     Serial.println("[API Service] JSON a ser enviado:");
     String json = generateJson(resp);
@@ -145,6 +146,31 @@ void ApiService::sendDataToApi(MeasurementResponse resp) {
     */
 
 }
+
+void ApiService::sendDataToApi(const StatusData& status) {
+
+    Serial.println("[API Service] JSON do Status a ser enviado:");
+    String json = generateJson(status);
+    Serial.println(json);
+    Serial.println("[API Service] Simulação que o status foi enviado corretamente!");
+
+    // Aqui você pode implementar o envio real via HTTP POST, por exemplo:
+    /*
+    if (wifi && wifi->isConnected()) {
+        WiFiClient client;
+        HTTPClient http;
+        http.begin(client, "http://sua-api.com/status");
+        http.addHeader("Content-Type", "application/json");
+        int httpResponseCode = http.POST(json);
+        Serial.printf("[API Service] Código resposta: %d\n", httpResponseCode);
+        http.end();
+    } else {
+        Serial.println("[API Service] Wi-Fi não conectado.");
+    }
+    */
+
+}
+
 
 String ApiService::generateJson(const MeasurementResponse& resp) {
     
@@ -181,13 +207,13 @@ String ApiService::generateJson(const MeasurementResponse& resp) {
 }
 
 
-String generateJson(const StatusData& status) {
+String ApiService::generateJson(const StatusData& status) {
 
     StaticJsonDocument<256> doc;
 
     doc["batteryLevel"] = status.batteryLevel;
     doc["connectionLevel"] = status.connectionLevel;
-    doc["currentActivity"] = static_cast<int>(status.currentActivity);
+    doc["currentActivity"] = status.activityToString();
     doc["currentSector"] = status.currentSector;
 
     String json;

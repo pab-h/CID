@@ -1,9 +1,9 @@
-#include "application/SystemStatus.hpp"
 #include <algorithm>
+#include "application/SystemStatus.hpp"
 
 namespace application {
 
-    std::string StatusData::activityToString() const {
+    const char* StatusData::activityToString() const {
         switch (currentActivity) {
             case Activity::IDLE:        return "Idle";
             case Activity::MOVING:      return "Moving";
@@ -11,7 +11,7 @@ namespace application {
             case Activity::CONNECTING:  return "Connecting";
             case Activity::ERROR:       return "Error";
             default:                    return "Unknown";
-        }
+        }   
     }
 
     SystemStatus::SystemStatus()
@@ -57,8 +57,9 @@ namespace application {
 
     /* Location getters and setters*/
 
-    void SystemStatus::setCurrentSector(const std::string& sector) {
-        currentSector = sector;
+    void SystemStatus::setCurrentSector(const char* sector) {
+        strncpy(currentSector, sector, sizeof(currentSector) - 1);
+        currentSector[sizeof(currentSector) - 1] = '\0';
     }
 
     std::string SystemStatus::getCurrentSector() const {
@@ -90,14 +91,16 @@ namespace application {
     StatusData SystemStatus::getStatusData() const {
 
         StatusData data;
-
         data.batteryLevel = batteryLevel;
         data.connectionLevel = connectionLevel;
         data.currentActivity = currentActivity;
-        data.currentSector = currentSector;
+        
+        strncpy(data.currentSector, currentSector, sizeof(data.currentSector) - 1);
+        data.currentSector[sizeof(data.currentSector) - 1] = '\0';
 
         return data;
 
     }
+
 
 }

@@ -1,5 +1,5 @@
-#include <application/Measurement.hpp>
 #include <Arduino.h>
+#include <application/Measurement.hpp>
 
 using namespace application;
 

@@ -1,6 +1,6 @@
-#include "drivers/Display.hpp"
 #include "pins.hpp"
 #include "env.hpp"
+#include "drivers/Display.hpp"
 
 using namespace drivers;
 
@@ -151,8 +151,6 @@ void Display::showActivity(const std::string& status) {
 }
 
 void Display::showLocation(const std::string& location) {
-
-    //42
 
     display.fillRect(0, 42, SCREEN_WIDTH, 10, SSD1306_BLACK);
     

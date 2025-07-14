@@ -6,6 +6,13 @@
 
 using namespace drivers;
 
+WifiDriver::WifiDriver(const String& ssid, const String& password) {
+
+  this->ssid     = ssid;
+  this->password = password;
+
+}
+
 String WifiDriver::getSSID() {
   return this->ssid;
 }
@@ -14,11 +21,8 @@ String WifiDriver::getPassword() {
   return this->password;
 }
 
-WifiDriver::WifiDriver(const String& ssid, const String& password) {
-
-  this->ssid     = ssid;
-  this->password = password;
-
+bool WifiDriver::isConnected(){
+  return WiFi.status() == WL_CONNECTED;
 }
 
 bool WifiDriver::connect() {
@@ -67,10 +71,6 @@ bool WifiDriver::reconnect(){
   Serial.println("Reconectando Wi-fi ...");
   this->disconnect();
   return this->connect();
-}
-
-bool WifiDriver::isConnected(){
-  return WiFi.status() == WL_CONNECTED;
 }
 
 int WifiDriver::getRSSI() const {
