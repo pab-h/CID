@@ -13,18 +13,16 @@ void tasks::vNavigationNotificationsTask(void* pvParameters) {
 
     while (true) {
 
-        if (navigation->getState() == State::WAITING_MEASURE && !notifications->isMeasureSend) {
-
+        if (notifications->isSendWaitingAlert) {
+            Serial.println("[Application::Navigation] Notificação de espera enviada");
             // xTaskNotify
-
-            notifications->isMeasureSend = true;
+            notifications->isSendWaitingAlert = false;
         }
-    
-        if (navigation->getState() == State::WAITING_MEASURE && notifications->isInsertingDone) {
-            
-            // xTaskNotify
 
-            notifications->isInsertingDone = false;
+        if (notifications->isSendInsertinDoneAlert) {
+            Serial.println("[Application::Navigation] Notificação de inserção completa enviada");
+            // xTaskNotify
+            notifications->isSendInsertinDoneAlert = false;
         }
 
         vTaskDelay(pdMS_TO_TICKS(50));
