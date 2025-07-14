@@ -23,7 +23,7 @@ namespace drivers {
 
         public:
 
-            RotaryEncoder(uint8_t siga, uint8_t sigb);
+            RotaryEncoder();
 
             /**
              * If possible, link read to a change 
@@ -32,6 +32,7 @@ namespace drivers {
              */
             void read();
             int  getPosition();
+            void setup(uint8_t siga, uint8_t sigb);
 
     };
     
