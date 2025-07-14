@@ -19,6 +19,7 @@ namespace entity {
             Travel(Step* steps, uint lenght);
             ~Travel();
 
+            bool  hasMore();
             Step* nextStep();
 
     };
