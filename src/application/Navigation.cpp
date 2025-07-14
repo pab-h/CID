@@ -1,208 +1,250 @@
+#include <Arduino.h>
+
 #include "pins.hpp"
-#include "env.hpp"
 #include "board.hpp"
+#include "env.hpp"
 
 #include "application/Navigation.hpp"
 
 #include "drivers/DcMotor.hpp"
 #include "drivers/RotaryEncoder.hpp"
 
-#include "entity/Travel.hpp"
-
 using namespace application;
 using namespace drivers;
 
 Navigation::Navigation() {
 
-    this->motorLeft  = new DcMotor(
+    this->motorLeft.setup(
         ENA_PIN,
         IN1_PIN,
         IN2_PIN,
         PWM_CHANNEL_0
     );
-    this->motorRight = new DcMotor(
+    this->motorRight.setup(
         ENB_PIN,
         IN3_PIN,
         IN4_PIN,
         PWM_CHANNEL_1
     );
-
-    this->hodometer = new RotaryEncoder(
+    this->hodometer.setup(
         SIGA_PIN,
         SIGB_PIN
     );
 
-    this->motorLeft->disable();
-    this->motorRight->disable();
+    this->state            = States::PULLING;
+    this->travel           = nullptr;
+    this->currentStep      = nullptr;
+    this->direction        = 0;
+    this->lastStepPosition = 0;
 
-    this->motorLeft->setPower(LEFT_MOTOR_PWM);
-    this->motorRight->setPower(RIGHT_MOTOR_PWM);
+    this->notifications.isSendWaitingAlert      = false;
+    this->notifications.isSendInsertinDoneAlert = false;
 
 
-    this->state         = State::IDLE;
-    this->angle         = 0;
-    this->travel        = nullptr;
-    this->startAngle    = 0;
-    this->startPosition = 0;
-    this->currentStep   = nullptr;
+    this->motorLeft.setPower(LEFT_MOTOR_PWM);
+    this->motorRight.setPower(RIGHT_MOTOR_PWM);
+
+    this->motorLeft.clockwise();
+    this->motorRight.clockwise();
+
+    this->motorLeft.disable();
+    this->motorRight.disable();
 
 }
 
 Navigation::~Navigation() {
 
-    delete this->motorLeft;
-    delete this->motorRight;
-    
-    delete this->hodometer;
-
-    delete this->travel;
+    if (this->travel != nullptr) {
+        delete this->travel;
+    }
 
 }
 
-Notifications* Navigation::getNotifications() {  
+
+void Navigation::pulling() {
+
+    if (this->travel == nullptr) {
+
+        Serial.println("[Application::Navigation] Nenhum rota foi definida");
+
+        return;
+    }
+
+    if (!this->travel->hasMore()) {
+
+        Serial.println("[Application::Navigation] Não há novos passos");
+        
+        return;
+    }
+
+    this->currentStep = this->travel->nextStep();
+
+    if (this->getMisalignment() != 0) {
+        
+        Serial.println("[Application::Navigation] Direção desalinha... ajustando");
+        this->state = States::SPINNING;
+
+        return;
+    }
+
+    Serial.println("[Application::Navigation] Iniciando a caminhada");
+    this->state = States::FORWARD;
+
+}
+
+void Navigation::forward() {
+
+    this->motorLeft.enable();
+    this->motorRight.enable();
+
+    this->motorRight.clockwise();
+    this->motorLeft.clockwise();
+
+    Step* step           = this->currentStep;
+    int lastStepDistance = this->getLastStepDistance(); 
+
+    if (!(lastStepDistance >= step->distance)) {
+
+        Serial.print("[Application::Navigation] Ainda não chegou no objetivo. ");
+        Serial.print(lastStepDistance);
+        Serial.print(" passos de ");
+        Serial.println(step->distance);
+
+        return;
+    }
+
+    this->motorRight.disable();
+    this->motorLeft.disable();
+
+    this->lastStepPosition = this->hodometer.getPosition();
+
+    if (step->toMeasure) {
+
+        this->state                            = States::WAITING;
+        this->notifications.isSendWaitingAlert = true;
+
+        Serial.print("[Application::Navigation] Modo de espera ativado. Setor = ");
+        Serial.println(this->currentStep->sector);
+
+        return;
+    }
+
+    this->state = States::PULLING;
+
+}
+
+void Navigation::spinning() {
+
+    Serial.print("[Application::Navigation] Ajustando a direção atual de ");
+    Serial.print(this->direction);
+    Serial.print(" para ");
+    Serial.println(this->currentStep->direction);
+
+    uint16_t misalignment = this->getMisalignment();
+
+    if (misalignment == 0) {
+
+        this->motorRight.disable();
+        this->motorLeft.disable();
+        
+        this->state     = States::FORWARD;
+        this->direction = this->currentStep->direction;
+
+        Serial.println("[Application::Navigation] Alinhamento completo");
+
+        return;
+    }
+
+    if (misalignment > 0) {
+
+        this->motorRight.clockwise();
+        this->motorLeft.counterclockwise();
+
+    }
+
+    if (misalignment < 0) {
+
+        this->motorRight.counterclockwise();
+        this->motorLeft.clockwise();
+        
+    }
+
+    this->motorRight.enable();
+    this->motorLeft.enable();
+
+}
+
+void Navigation::waiting() {
+    Serial.println("[Application::Navigation] Esperando o sistema de sensoriamento");
+}
+
+void Navigation::inserting() {
+
+    Serial.println("[Application::Navigation] Inserindo o sendor de humidade no solo...");
+
+    this->motorLeft.enable();
+    this->motorRight.enable();
+
+    if (!(this->getLastStepDistance() >= INSERTING_PULSES)) {
+        return;
+    }
+
+    this->state                                 = States::WAITING;
+    this->notifications.isSendInsertinDoneAlert = true;
+
+    Serial.println("[Application::Navigation] Inserção concluída");
+
+}
+
+int Navigation::getMisalignment() {
+    return this->direction - this->currentStep->direction;
+}
+
+int Navigation::getLastStepDistance() {
+    return this->hodometer.getPosition() - this->lastStepPosition;
+}
+
+
+Notifications* Navigation::getNotifications() {
     return &this->notifications;
 }
 
-State Navigation::getState() {
-    return this->state;
-}
-
 RotaryEncoder* Navigation::getRotaryEncoder() {
-    return this->hodometer;
+    return &this->hodometer;
 }
 
 void Navigation::setTravel(Travel* travel) {
 
+    if (this->travel != nullptr) {
+        delete this->travel;
+    }
+
     this->travel = travel;
 
-}
-
-void Navigation::updateAngle(uint pulses) {
-
-    this->angle = (float) pulses / PULSES_PER_DEGREE;
+    Serial.println("[Application::Navigation] Nova viagem inserida");
 
 }
-
-void Navigation::setupRotateMotors() {
-
-    this->startAngle = this->angle;
-    this->state      = State::TURNING;
-
-    if (this->currentStep->direction > this->angle) {
-
-        this->motorLeft->clockwise();
-        this->motorRight->counterclockwise();
-
-    }
-
-    if (this->currentStep->direction < this->angle) {
-
-        this->motorLeft->counterclockwise();
-        this->motorRight->clockwise();
-
-    }
-
-    this->motorLeft->enable();
-    this->motorRight->enable();
-
-}
-
-void Navigation::setupForwardMotors() {
-
-    this->motorLeft->clockwise();
-    this->motorRight->clockwise();
-
-    this->motorLeft->enable();
-    this->motorRight->enable();    
-
-}
-
-void Navigation::stepIdle() {
-
-    this->currentStep = this->travel->nextStep();
-
-    if (this->currentStep == nullptr) {
-        return;
-    }
-
-    if (this->currentStep->distance == 0 && this->currentStep->direction == this->angle) {
-        return;
-    }
-
-    if (this->currentStep->direction != this->angle) {
-
-        this->setupRotateMotors();
-
-        return;
-    }
-
-    this->startPosition = this->hodometer->getPosition();
-    this->setupForwardMotors();
-    this->state = State::MOVING;
-
-}
-
-void Navigation::stepMoving() {
-
-    int distance = this->hodometer->getPosition() - this->startPosition;
-
-    if (distance <= this->currentStep->distance) {
-        return;
-    }
-
-    this->motorLeft->disable();
-    this->motorRight->disable();
-
-    if (this->currentStep->toMeasure) {
-        this->state = State::WAITING_MEASURE;
-        return;
-    }
-
-    this->state = State::IDLE;
-
-}
-
-void Navigation::stepTurning() {
-
-    int currentAngle = this->angle;  
-
-    if (currentAngle >= this->currentStep->direction) {
-        
-        this->motorLeft->disable();
-        this->motorRight->disable();
-
-        this->startPosition = this->hodometer->getPosition();
-        this->setupForwardMotors();
-        this->state = State::MOVING;
-
-    }
-
-}
-
-void Navigation::stepWaiting() {};
-
-void Navigation::stepInserting() {
-
-    this->setupForwardMotors();
-
-    int distance = this->hodometer->getPosition() - this->startPosition;
-
-    if (distance >= 3) {
-        this->state                         = State::WAITING_MEASURE;
-        this->notifications.isInsertingDone = true;
-    }
-
-}
-
 
 void Navigation::step() {
 
-    switch (this->state) {
-        case    State::IDLE             : return this->stepIdle();
-        case    State::MOVING           : return this->stepMoving();
-        case    State::TURNING          : return this->stepTurning();
-        case    State::WAITING_MEASURE  : return this->stepWaiting();
-        default                         : return;
+    if (this->state == States::PULLING) {
+        return this->pulling();
+    }
+
+    if (this->state == States::FORWARD) {
+        return this->forward();
+    }
+
+    if (this->state == States::SPINNING) {
+        return this->spinning();
+    }
+
+    if (this->state == States::WAITING) {
+        return this->waiting();
+    }
+
+    if (this->state == States::INSERTING) {
+        return this->inserting();
     }
 
 }
