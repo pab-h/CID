@@ -11,6 +11,18 @@ using namespace entity;
 
 namespace application {
 
+    enum class ApiRequestType {
+        SendMeasurement,
+        SendStatus
+    };
+
+    struct ApiMessage {
+        ApiRequestType type;
+        MeasurementResponse measurement;
+        StatusData status;
+    };
+
+
     /**
      * @brief Class responsible for the API service, including Wi-Fi connection,
      *        JSON data handling, sending and receiving.
@@ -57,7 +69,14 @@ namespace application {
              * 
              * @param resp Structure containing measurement data to send.
              */
-            void sendDataToApi(const MeasurementResponse resp);
+            void sendDataToApi(const MeasurementResponse& resp);
+
+            /**
+             * @brief Sends StatusData to the API, serializing it as JSON.
+             * 
+             * @param resp Structure containing measurement data to send.
+             */
+            void sendDataToApi(const StatusData& status);
 
             /**
              * @brief Generates a JSON string from the measurement response.

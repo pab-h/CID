@@ -6,19 +6,19 @@
 
 using namespace drivers;
 
+WifiDriver::WifiDriver(const String& ssid, const String& password) {
+
+  this->ssid     = ssid;
+  this->password = password;
+
+}
+
 String WifiDriver::getSSID() {
   return this->ssid;
 }
 
 String WifiDriver::getPassword() {
   return this->password;
-}
-
-WifiDriver::WifiDriver(const String& ssid, const String& password) {
-
-  this->ssid     = ssid;
-  this->password = password;
-
 }
 
 bool WifiDriver::connect() {

@@ -152,8 +152,6 @@ void Display::showActivity(const std::string& status) {
 
 void Display::showLocation(const std::string& location) {
 
-    //42
-
     display.fillRect(0, 42, SCREEN_WIDTH, 10, SSD1306_BLACK);
     
     drawIcon(0, 42, locationIconBitmap, 16, 16);

@@ -2,7 +2,10 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include "tasks/Measurement.hpp"
+#include "tasks/Connection.hpp" 
+#include "application/ApiService.hpp" 
 #include "globals.hpp"
+
 
 namespace tasks {
 
@@ -34,6 +37,15 @@ namespace tasks {
             // xTaskNotifyGive(xTakePictureTaskHandle);
             // ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
+            application::ApiMessage msg;
+            msg.type = application::ApiRequestType::SendMeasurement;
+            msg.measurement = measurement.getMeasures();
+
+            BaseType_t sent = xQueueSend(tasks::apiQueue, &msg, portMAX_DELAY);
+            if (sent != pdTRUE) {
+                Serial.println("[vSensorManagerTask] Erro ao enviar mensagem para fila da API!");
+            }
+            
             xTaskNotifyGive(xMainHandle);
         }
     

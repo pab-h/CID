@@ -24,7 +24,7 @@ namespace application {
         uint8_t batteryLevel;        ///< Battery level percentage (0–100%)
         uint8_t connectionLevel;     ///< Wi-Fi signal level (0–4)
         Activity currentActivity;    ///< Current activity being performed
-        std::string currentSector;   ///< Current or target sector name
+        char currentSector[18];      ///< Current or target sector name
 
         /**
          * @brief Converts the current activity into a readable string.
@@ -114,7 +114,7 @@ namespace application {
              * 
              * @param sector The name of the sector (e.g., "Sector A1", "Heading to Sector B3").
              */
-            void setCurrentSector(const std::string& sector);
+            void setCurrentSector(const char* sector);
 
             /* > Class general functions < */
 
@@ -178,7 +178,7 @@ namespace application {
              * 
              * Example: "Sector A1", "Heading to Sector B2".
              */
-            std::string currentSector;
+            char currentSector[18];
 
     };
 

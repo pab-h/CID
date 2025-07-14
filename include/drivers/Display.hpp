@@ -101,7 +101,6 @@ namespace drivers {
          */
         void drawIcon(uint8_t x, uint8_t y, const uint8_t* bitmap, uint8_t w, uint8_t h);
 
-        void drawRadius(uint8_t x, uint8_t y, uint8_t rInit, uint8_t rEnd, int16_t start_angle, int16_t end_angle, uint16_t color);
     };
 
 }

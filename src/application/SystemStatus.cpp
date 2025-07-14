@@ -57,9 +57,12 @@ namespace application {
 
     /* Location getters and setters*/
 
-    void SystemStatus::setCurrentSector(const std::string& sector) {
-        currentSector = sector;
+    void SystemStatus::setCurrentSector(const char* sector) {
+        strncpy(currentSector, sector, sizeof(currentSector) - 1);
+        currentSector[sizeof(currentSector) - 1] = '\0';
     }
+
+
 
     std::string SystemStatus::getCurrentSector() const {
         return currentSector;
@@ -90,14 +93,16 @@ namespace application {
     StatusData SystemStatus::getStatusData() const {
 
         StatusData data;
-
         data.batteryLevel = batteryLevel;
         data.connectionLevel = connectionLevel;
         data.currentActivity = currentActivity;
-        data.currentSector = currentSector;
+        
+        strncpy(data.currentSector, currentSector, sizeof(data.currentSector) - 1);
+        data.currentSector[sizeof(data.currentSector) - 1] = '\0';
 
         return data;
 
     }
+
 
 }
