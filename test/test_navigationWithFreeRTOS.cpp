@@ -3,7 +3,7 @@
 #include "drivers/RotaryEncoder.hpp"
 #include "application/Navigation.hpp"
 #include "entity/Travel.hpp"
-#include "tasks/navigation.hpp"
+#include "tasks/Navigation.hpp"
 
 #include "pins.hpp"
 
@@ -15,37 +15,29 @@ using namespace tasks;
 Navigation     nav;
 RotaryEncoder* encoder;
 
-const char* stateToString(NavigationState state) {
-    switch (state) {
-        case NavigationState::IDLE   : return "IDLE";
-        case NavigationState::MOVING : return "MOVING";
-        case NavigationState::TURNING: return "TURNING";
-        default                      : return "UNKNOWN";
-    }
-}
-
-void serialMonitorTask(void* pvParameters) {
-
-    RotaryEncoder* encoder = static_cast<RotaryEncoder*>(pvParameters);
-
-    while (true) {
-        Serial.print("STATE = ");
-        Serial.print(stateToString(nav.getState()));
-        Serial.print(" POSITION ENCODER = ");
-        Serial.println(encoder->getPosition());
-        vTaskDelay(pdMS_TO_TICKS(250)); 
-    }
-}
-
 void setup() {
 
     Serial.begin(9600);
 
     Step* steps = new Step[3];
     
-    steps[0] = Step(1, 0, false);
-    steps[1] = Step(2, 0, false);
-    steps[2] = Step(3, 0, false);
+    steps[0]           = Step();
+    steps[0].distance  = 1;
+    steps[0].direction = 0;
+    steps[0].sector    = "";
+    steps[0].toMeasure = false;
+
+    steps[1]           = Step();
+    steps[1].distance  = 5;
+    steps[1].direction = 0;
+    steps[1].sector    = "Brazil";
+    steps[1].toMeasure = true;
+
+    steps[2]           = Step();
+    steps[2].distance  = 10;
+    steps[2].direction = 10;
+    steps[2].sector    = "";
+    steps[2].toMeasure = false;
 
     Travel* travel = new Travel(steps, 3);
 
@@ -55,9 +47,33 @@ void setup() {
     delay(2000);
     Serial.println("Iniciando o teste com FreeRTOS");
 
-    xTaskCreatePinnedToCore(vUpdateRotaryEncoderTask, "Encoder Task", 2048, &nav, 1, NULL, APP_CPU_NUM);
-    xTaskCreatePinnedToCore(vNavigationTask, "Navigation Task", 2048, &nav, 1, NULL, APP_CPU_NUM);
-    xTaskCreatePinnedToCore(serialMonitorTask, "Serial Monitor", 2048, encoder, 1, NULL, APP_CPU_NUM);
+    xTaskCreatePinnedToCore(
+        vUpdateRotaryEncoderTask, 
+        "Encoder Task", 
+        2048, 
+        &nav, 
+        1, 
+        NULL, 
+        APP_CPU_NUM
+    );
+    xTaskCreatePinnedToCore(
+        vNavigationTask, 
+        "Navigation Task", 
+        2048, 
+        &nav, 
+        1, 
+        NULL, 
+        APP_CPU_NUM
+    );
+    xTaskCreatePinnedToCore(
+        vNavigationNotificationsTask, 
+        "Notifications navigation Task", 
+        2048, 
+        &nav, 
+        1, 
+        NULL, 
+        APP_CPU_NUM
+    );
 
 }
 

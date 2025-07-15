@@ -24,7 +24,7 @@ Travel::~Travel() {
 
 Step* Travel::nextStep() {
 
-    if (this->current >= this->lenght) {
+    if (!this->hasMore()) {
         return nullptr;
     }
 
@@ -33,4 +33,8 @@ Step* Travel::nextStep() {
     this->current++;
 
     return step;
+}
+
+bool Travel::hasMore() {
+    return this->current < this->lenght;
 }

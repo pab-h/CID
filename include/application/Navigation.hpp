@@ -1,54 +1,57 @@
 #pragma once
 
+#include "entity/Travel.hpp"
+
 #include "drivers/DcMotor.hpp"
 #include "drivers/RotaryEncoder.hpp"
-
-#include "entity/Travel.hpp"
 
 using namespace drivers;
 using namespace entity;
 
 namespace application {
-    
-    enum class State   {
-        IDLE             ,
-        MOVING           ,
-        TURNING          ,
-        WAITING_MEASURE  ,
-        INSERTING_SENSOR
+
+    enum States {
+        PULLING      ,
+        FORWARD      ,
+        WAITING      ,
+        INSERTING    ,
+        DISINSERTION ,
+        SPINNING     ,
     };
-    
+
     class Notifications {
-        public:
-            bool isMeasureSend;
-            bool isInsertingDone;
+        public: 
+
+            bool isSendWaitingAlert;
+            bool isSendInsertinDoneAlert;
+            bool isSendDesinsertinDoneAlert;
+
     };
 
     class Navigation {
 
         private:
 
+            DcMotor       motorLeft;
+            DcMotor       motorRight;
+            RotaryEncoder hodometer;
+
             Notifications notifications;
+            States        state;
+            Travel*       travel;
+            Step*         currentStep;
+            uint16_t      direction;
+            int           lastStepPosition;
 
-            DcMotor*       motorLeft;
-            DcMotor*       motorRight;
-            RotaryEncoder* hodometer;
-
-            State   state;
-            float   angle;
-            float   startAngle;
-            Travel* travel;
-            Step*   currentStep;
-            int     startPosition;
-
-            void stepIdle();
-            void stepMoving();
-            void stepTurning();
-            void stepWaiting();
-            void stepInserting();
-
-            void setupRotateMotors();
-            void setupForwardMotors();
+            
+            int  getLastStepDistance();
+            int  getMisalignment();
+            void pulling();
+            void forward();
+            void spinning();
+            void waiting();
+            void inserting();
+            void disinserting();
 
         public:
 
@@ -56,12 +59,9 @@ namespace application {
             ~Navigation();
 
             RotaryEncoder* getRotaryEncoder();
-            State          getState();
             Notifications* getNotifications();
-
-            void updateAngle(uint pulses);
-            void setTravel(Travel* travel);
-            void step();
+            void           setTravel(Travel* travel);
+            void           step();
 
     };
 

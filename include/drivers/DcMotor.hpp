@@ -21,7 +21,9 @@ namespace drivers {
 
         public:
 
-            DcMotor(uint8_t en, uint8_t inl, uint8_t inr, uint8_t pwmChannel);
+            DcMotor();
+
+            void setup(uint8_t en, uint8_t inl, uint8_t inr, uint8_t pwmChannel);
 
             void clockwise();
             void counterclockwise();
