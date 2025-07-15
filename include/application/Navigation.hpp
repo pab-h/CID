@@ -62,6 +62,8 @@ namespace application {
             Notifications* getNotifications();
             void           setTravel(Travel* travel);
             void           step();
+            void           setInsertionState();
+            void           setDisinsertionState();
 
     };
 
