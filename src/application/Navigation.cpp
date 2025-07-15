@@ -253,6 +253,22 @@ void Navigation::setTravel(Travel* travel) {
 
 }
 
+void Navigation::setInsertionState() {
+
+    this->state = States::INSERTING;
+
+    Serial.println("[Application::Navigation] Estado de inserção habilitado");
+
+}
+
+void Navigation::setDisinsertionState() {
+
+    this->state = States::DISINSERTION;
+
+    Serial.println("[Application::Navigation] Estado de desinserção habilitado");
+
+}
+
 void Navigation::step() {
 
     if (this->state == States::PULLING) {
