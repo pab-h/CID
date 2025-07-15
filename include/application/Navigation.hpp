@@ -11,11 +11,12 @@ using namespace entity;
 namespace application {
 
     enum States {
-        PULLING   ,
-        FORWARD   ,
-        WAITING   ,
-        INSERTING ,
-        SPINNING  ,
+        PULLING      ,
+        FORWARD      ,
+        WAITING      ,
+        INSERTING    ,
+        DISINSERTION ,
+        SPINNING     ,
     };
 
     class Notifications {
@@ -23,6 +24,7 @@ namespace application {
 
             bool isSendWaitingAlert;
             bool isSendInsertinDoneAlert;
+            bool isSendDesinsertinDoneAlert;
 
     };
 
@@ -49,6 +51,7 @@ namespace application {
             void spinning();
             void waiting();
             void inserting();
+            void disinserting();
 
         public:
 

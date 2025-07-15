@@ -180,7 +180,7 @@ void Navigation::waiting() {
 
 void Navigation::inserting() {
 
-    Serial.println("[Application::Navigation] Inserindo o sendor de humidade no solo...");
+    Serial.println("[Application::Navigation] Inserindo o sensor de humidade no solo...");
 
     this->motorLeft.enable();
     this->motorRight.enable();
@@ -189,10 +189,38 @@ void Navigation::inserting() {
         return;
     }
 
+    this->motorLeft.disable();
+    this->motorRight.disable();
+
     this->state                                 = States::WAITING;
     this->notifications.isSendInsertinDoneAlert = true;
 
     Serial.println("[Application::Navigation] Inserção concluída");
+
+}
+
+void Navigation::disinserting() {
+
+    Serial.println("[Application::Navigation] Retirando o sensor de humidade no solo...");
+
+    this->motorLeft.counterclockwise();
+    this->motorRight.counterclockwise();
+
+    this->motorLeft.enable();
+    this->motorRight.enable();
+
+
+    if (!(this->getLastStepDistance() <= INSERTING_PULSES)) {
+        return;
+    }
+
+    this->motorLeft.disable();
+    this->motorRight.disable();
+
+    this->state                                    = States::WAITING;
+    this->notifications.isSendDesinsertinDoneAlert = true;
+
+    Serial.println("[Application::Navigation] Retirada concluída");
 
 }
 
@@ -245,6 +273,10 @@ void Navigation::step() {
 
     if (this->state == States::INSERTING) {
         return this->inserting();
+    }
+
+    if (this->state == States::DISINSERTION) {
+        return this->disinserting();
     }
 
 }
