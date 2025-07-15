@@ -25,6 +25,12 @@ void tasks::vNavigationNotificationsTask(void* pvParameters) {
             notifications->isSendInsertinDoneAlert = false;
         }
 
+        if(notifications->isSendDesinsertinDoneAlert) {
+            Serial.println("[Application::Navigation] Notificação de retirada completa enviada");
+            // xTaskNotify
+            notifications->isSendDesinsertinDoneAlert = false;
+        }
+
         vTaskDelay(pdMS_TO_TICKS(50));
 
     }
