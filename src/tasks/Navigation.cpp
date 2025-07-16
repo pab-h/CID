@@ -1,10 +1,39 @@
 #include <freertos/FreeRTOS.h>
+
 #include "application/Navigation.hpp"
 #include "tasks/Navigation.hpp"
 
 using namespace application;
 using namespace drivers;
 using namespace tasks;
+
+void tasks::vNavigationSetInsertionStateTask(void* pvParameters) {
+
+    Navigation* navigation = static_cast<Navigation*>(pvParameters);
+
+    while (true) {
+
+        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+
+        navigation->setInsertionState();
+
+    }
+
+}
+
+void tasks::vNavigationSetDisinsertionStateTask(void* pvParameters) {
+
+    Navigation* navigation = static_cast<Navigation*>(pvParameters);
+
+    while (true) {
+
+        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+
+        navigation->setDisinsertionState();
+
+    }
+
+}
 
 void tasks::vNavigationNotificationsTask(void* pvParameters) {
 
@@ -13,18 +42,22 @@ void tasks::vNavigationNotificationsTask(void* pvParameters) {
 
     while (true) {
 
-        if (navigation->getState() == State::WAITING_MEASURE && !notifications->isMeasureSend) {
-
+        if (notifications->isSendWaitingAlert) {
+            Serial.println("[Application::Navigation] Notificação de espera enviada");
             // xTaskNotify
-
-            notifications->isMeasureSend = true;
+            notifications->isSendWaitingAlert = false;
         }
-    
-        if (navigation->getState() == State::WAITING_MEASURE && notifications->isInsertingDone) {
-            
-            // xTaskNotify
 
-            notifications->isInsertingDone = false;
+        if (notifications->isSendInsertinDoneAlert) {
+            Serial.println("[Application::Navigation] Notificação de inserção completa enviada");
+            // xTaskNotify
+            notifications->isSendInsertinDoneAlert = false;
+        }
+
+        if(notifications->isSendDesinsertinDoneAlert) {
+            Serial.println("[Application::Navigation] Notificação de retirada completa enviada");
+            // xTaskNotify
+            notifications->isSendDesinsertinDoneAlert = false;
         }
 
         vTaskDelay(pdMS_TO_TICKS(50));

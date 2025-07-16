@@ -5,7 +5,17 @@
 
 using namespace drivers;
 
-DcMotor::DcMotor(uint8_t en, uint8_t inl, uint8_t inr, uint8_t pwmChannel) {
+DcMotor::DcMotor() {
+
+    this->en         = 0;
+    this->inl        = 0;
+    this->inr        = 0;
+    this->pwmChannel = 0;
+    this->power      = 0x00;
+
+}
+
+void DcMotor::setup(uint8_t en, uint8_t inl, uint8_t inr, uint8_t pwmChannel) {
 
     this->en         = en;
     this->inl        = inl;

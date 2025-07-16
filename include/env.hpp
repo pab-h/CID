@@ -1,7 +1,10 @@
 #pragma once
 
-/* Conversion constant for rotation sensor angles */
-#define PULSES_PER_DEGREE 5.0
+#define INSERTING_PULSES 3
+
+/* Conversion constants */
+#define PULSES_TO_DEGREE      5.0
+#define PULSES_TO_CENTIMETERS 1.0
 
 /* Motor power */
 #define LEFT_MOTOR_PWM  0x80 
