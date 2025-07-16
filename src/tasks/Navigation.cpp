@@ -66,17 +66,17 @@ void tasks::vNavigationNotificationsTask(void* pvParameters) {
 
 }
 
-void tasks::vUpdateRotaryEncoderTask(void* pvParameters) {
+// void tasks::vUpdateRotaryEncoderTask(void* pvParameters) {
     
-    Navigation*    navigation = static_cast<Navigation*>(pvParameters);
-    RotaryEncoder* encoder    = navigation->getRotaryEncoder();
+//     Navigation*    navigation = static_cast<Navigation*>(pvParameters);
+//     RotaryEncoder* encoder    = navigation->getRotaryEncoder();
     
-    while (true) {
-        encoder->read();
-        vTaskDelay(pdMS_TO_TICKS(50));
-    }
+//     while (true) {
+//         encoder->read();
+//         vTaskDelay(pdMS_TO_TICKS(50));
+//     }
 
-}
+// }
 
 void tasks::vNavigationTask(void* pvParameters) {
     

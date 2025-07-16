@@ -8,6 +8,10 @@
 #include "tasks/SystemStatus.hpp"
 #include "globals.hpp"
 
+void IRAM_ATTR updateRotaryEncoderISR() {
+    navigation.getRotaryEncoder()->read();
+}
+
 void setup() {
 
     Serial.begin(115200);
@@ -40,6 +44,11 @@ void setup() {
     xTaskCreatePinnedToCore(tasks::vMeasureLuminosityTask, "MeasureLuminosity", 2048, NULL, 2, &tasks::xMeasureLuminosityTaskHandle, 0);
     xTaskCreatePinnedToCore(tasks::vSystemStatusTask, "SystemMonitor", 2048, NULL, 1, &tasks::xSystemStatusTaskHandle, 1);
 
+    attachInterrupt(
+        digitalPinToInterrupt(SIGA_PIN),
+        updateRotaryEncoderISR,
+        RISING
+    );
 
     Serial.println("Setup concluído, tasks criadas.");
 
