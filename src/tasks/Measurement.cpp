@@ -3,6 +3,7 @@
 #include <freertos/task.h>
 #include "tasks/Measurement.hpp"
 #include "tasks/Connection.hpp" 
+#include "tasks/Navigation.hpp"
 #include "application/ApiService.hpp" 
 #include "globals.hpp"
 
@@ -47,6 +48,7 @@ namespace tasks {
             }
             
             xTaskNotifyGive(xMainHandle);
+    
         }
     
     }
@@ -85,10 +87,29 @@ namespace tasks {
 
         while (true) {
 
+            // Espera notificação do manager
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
 
+            // Move o servo pra baixo
+
+            // Notifica a classe de navegação (Inserir sensor de umidade)
+            xTaskNotifyGive(xNavigationSetInsertionStateTaskHandle);
+            
+            // Espera a notificação da navegação (Sensor já inserido)
+            ulTaskNotifyTake(pdTRUE, portMAX_DELAY);    
+
+            // Mede a umidade do solo
             measurement.measureMoisture();
 
+            // Notifica a navegação (Retirar a inserção do sensor de umidade)
+            xTaskNotifyGive(xNavigationSetDisinsertionStateTaskHandle);
+
+            // Move o servo pra cima
+
+            // Espera a notificação da navegação (Sensor já retirado)
+            ulTaskNotifyTake(pdTRUE, portMAX_DELAY); 
+
+            // Notifica a task manager
             xTaskNotifyGive(xSensorManagerTaskHandle);
 
         }

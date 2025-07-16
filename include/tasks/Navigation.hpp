@@ -4,8 +4,8 @@
 
 namespace tasks {
 
-    TaskHandle_t xNavigationSetInsertionStateTaskHandle;
-    TaskHandle_t xNavigationSetDisinsertionStateTaskHandle;
+    extern TaskHandle_t xNavigationSetInsertionStateTaskHandle;
+    extern TaskHandle_t xNavigationSetDisinsertionStateTaskHandle;
 
     void vNavigationTask(void* pvParameters);
     void vUpdateRotaryEncoderTask(void* pvParameters);
