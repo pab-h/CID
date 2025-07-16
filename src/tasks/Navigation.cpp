@@ -71,17 +71,17 @@ namespace tasks {
 
     }
 
-    void vUpdateRotaryEncoderTask(void* pvParameters) {
-        
-        Navigation*    navigation = static_cast<Navigation*>(pvParameters);
-        RotaryEncoder* encoder    = navigation->getRotaryEncoder();
-        
-        while (true) {
-            encoder->read();
-            vTaskDelay(pdMS_TO_TICKS(50));
-        }
+// void tasks::vUpdateRotaryEncoderTask(void* pvParameters) {
+    
+//     Navigation*    navigation = static_cast<Navigation*>(pvParameters);
+//     RotaryEncoder* encoder    = navigation->getRotaryEncoder();
+    
+//     while (true) {
+//         encoder->read();
+//         vTaskDelay(pdMS_TO_TICKS(50));
+//     }
 
-    }
+// }
 
     void vNavigationTask(void* pvParameters) {
         
